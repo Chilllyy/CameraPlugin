@@ -1,0 +1,10 @@
+name: Camera
+main: me.chillywilly.CameraPlugin
+version: 0.0.1
+author: Chilly_Willy
+api-version: 1.20
+
+commands:
+  camera:
+    permission: camera.admin
+    description: Main camera command for setting up photo opportunities
