@@ -11,9 +11,6 @@ command:
     range-complete: "{prefix} <white>Successfully updated Sense range"
   render:
     render-complete: "{prefix} <green>Successfully rendered"
-    render-error: "{prefix} <red>There was an error while rendering"
-    render-timer-not-number: "{prefix} <red>Render timer is not a number, please try again"
-    no-render-provided: "{prefix} <red>There was no render found by this name, did you mistype it?"
   manage:
     rename:
       rename-complete: "{prefix} <white>Successfully renamed file"
