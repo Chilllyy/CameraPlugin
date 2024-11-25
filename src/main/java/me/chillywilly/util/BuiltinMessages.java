@@ -41,7 +41,7 @@ public class BuiltinMessages {
         });
     }
 
-    private void clearCache() {
+    public void clearCache() {
         messages.clear();
     }
 
