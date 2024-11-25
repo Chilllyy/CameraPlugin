@@ -1,5 +1,0 @@
-render:
-  image:
-    width: 1280
-    height: 720
-    fov: 60
