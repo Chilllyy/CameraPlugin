@@ -1,11 +1,9 @@
 package me.chillywilly.util;
 
-import java.nio.charset.StandardCharsets;
+import java.util.Random;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import com.google.common.collect.Iterables;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
@@ -30,7 +28,8 @@ public class NetManager {
     public void generateAndSendAuth(Player player) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.write(0);
-        int auth =  (int) Math.round(Math.random() * 1000);
+        int auth = new Random().nextInt(32768);
+        
         plugin.getLogger().info("Auth Code Being Sent: " + auth);
 
         out.writeInt(auth);
