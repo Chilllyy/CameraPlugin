@@ -43,6 +43,14 @@ public class CameraPlugin extends JavaPlugin {
         netManager = new NetManager(this);
     }
 
+    @Override
+    public void onDisable() {
+        netManager.disable();
+        messages.clearCache();
+        shoots.clearCache();
+        getServer().getScheduler().cancelTasks(this);
+    }
+
     public void sendMessage(Player player, String key) {
         Component message = messages.getMessage(key);
         Audience aud = (Audience) player;
@@ -60,7 +68,6 @@ public class CameraPlugin extends JavaPlugin {
 
     public void resetMessageCache() {
         messages.reload();
-        //TODO make messages an actual cache (loads all on start)
     }
 
     public NetManager getNetManager() {
