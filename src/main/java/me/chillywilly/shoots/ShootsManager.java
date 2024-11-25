@@ -30,7 +30,7 @@ public class ShootsManager{
         fillCache();
     }
 
-    private void clearCache() {
+    public void clearCache() {
         shootList.clear();
     }
 
@@ -105,9 +105,5 @@ public class ShootsManager{
         }
 
         return list;
-    }
-
-    public void clearList() {
-        shootList.clear();
     }
 }
