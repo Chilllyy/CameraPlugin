@@ -4,11 +4,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.StringUtil;
 
 import me.chillywilly.CameraPlugin;
@@ -83,7 +85,7 @@ public class CameraCommand implements TabExecutor {
                     plugin.sendMessage(player, "command.render.no-render-provided");
                     return true;
                 }
-                float timer = 5;
+                float timer = 5; //TODO Config Timer
                 if (arg3.length >= 3) {
                     try {
                         float arg_timer = Float.parseFloat(arg3[2]);
@@ -96,8 +98,8 @@ public class CameraCommand implements TabExecutor {
 
                 Shoot shot = plugin.getShoots().get(new File(CameraPlugin.shoots_path + arg3[1] + ".yml"));
 
-                //TODO Render
-
+                shot.render(timer);
+                
                 return true;
 
             case "manage":
