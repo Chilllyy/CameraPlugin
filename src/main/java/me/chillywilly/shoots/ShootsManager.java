@@ -56,7 +56,7 @@ public class ShootsManager{
     }
 
     public void loadShoot(File file) {
-        shootList.add(new Shoot(file));
+        shootList.add(new Shoot(file, plugin));
     }
 
     public int createShoot(File file) {
@@ -74,7 +74,7 @@ public class ShootsManager{
 
         try {
             config.save(file);
-            shootList.add(new Shoot(file));
+            shootList.add(new Shoot(file, plugin));
             return 1;
         } catch (IOException io) {
             plugin.getLogger().warning("Unable to create shoots file!");
