@@ -1,8 +1,11 @@
 package me.chillywilly.util;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
@@ -13,10 +16,13 @@ import me.chillywilly.CameraPlugin;
 
 public class NetManager implements PluginMessageListener {
     private CameraPlugin plugin;
-    private Player companion;
+    private List<Player> companion;
+    private HashMap<Player, Boolean> busy;
 
     public NetManager (CameraPlugin plugin) {
         this.plugin = plugin;
+        this.companion = new ArrayList<Player>();
+        this.busy = new HashMap<Player, Boolean>();
         enable();
     }
 
@@ -34,12 +40,35 @@ public class NetManager implements PluginMessageListener {
         
         plugin.getServer().getMessenger().unregisterIncomingPluginChannel(plugin, NetConstants.COMPANION_FOUND_ID, this);
         plugin.getServer().getMessenger().unregisterIncomingPluginChannel(plugin, NetConstants.SCREENSHOT_TAKEN_ID, this);
+
+        companion.clear();
+        busy.clear();
     }
 
-    public void findCompanion() {
-        Bukkit.getOnlinePlayers().forEach((player) -> {
-            send(player, NetConstants.CHECK_FOR_COMPANION_ID);
-        });
+    public Player getAvailableCompanion() {
+        Iterator<Player> it = companion.iterator();
+
+        while (it.hasNext()) {
+            Player player = it.next();
+            if (!busy.get(player) && player.isOnline()) {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    public void checkCompanion(Player player) {
+        if (!player.isOnline()) return;
+
+        send(player, NetConstants.CHECK_FOR_COMPANION_ID);
+    }
+
+    public void removeCompanion(Player player) {
+        companion.remove(player);
+        if (busy.containsKey(player)) {
+            busy.remove(player);
+        }
     }
 
     public void screenshot(Player player) {
@@ -50,6 +79,7 @@ public class NetManager implements PluginMessageListener {
         out.writeInt(auth);
 
         send(player, NetConstants.SCREENSHOT_PACKET_ID, out);
+        busy.put(player, true);
     }
 
     private void send(Player player, String channel) {
@@ -61,19 +91,18 @@ public class NetManager implements PluginMessageListener {
         plugin.getLogger().info("Sent Packet on channel: " + channel);
     }
 
-    public Player getCompanion() {
-        return companion;
-    }
-
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
         switch (channel) {
             case NetConstants.COMPANION_FOUND_ID:
                 plugin.getLogger().info("Companion Found! (" + player.getName() + ")");
-                companion = player;
+                companion.add(player);
+                busy.put(player, false);
+
                 break;
             case NetConstants.SCREENSHOT_TAKEN_ID:
                 //TODO Send message to all players
+                busy.put(player, false);
                 break;
             default:
                 plugin.getLogger().warning("Something weird happened, contact the dev with this info (Channel: " + channel + ", Player UUID: " + player.getUniqueId().toString() + ")");
