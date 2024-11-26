@@ -11,7 +11,7 @@ command:
     range-complete: "{prefix} <white>Successfully updated Sense range"
   render:
     render-complete: "{prefix} <green>Successfully rendered"
-    render-no-account-online: "{prefix} <red>There is currently no camera online, please contact an administrator!"
+    no-account-online: "{prefix} <red>There is currently no camera online, please contact an administrator!"
   manage:
     rename:
       rename-complete: "{prefix} <white>Successfully renamed file"
