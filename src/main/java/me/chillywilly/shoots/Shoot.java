@@ -2,12 +2,23 @@ package me.chillywilly.shoots;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
+
+import me.chillywilly.CameraPlugin;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class Shoot {
+    private CameraPlugin plugin;
+    
     private File shoot_file;
     
     private Location cameraLocation;
@@ -16,8 +27,15 @@ public class Shoot {
 
     private float range;
 
-    public Shoot(File shoot_file) {
+    private float timer;
+
+    private BukkitTask timerTask;
+
+    public Boolean in_use = false;
+    
+    public Shoot(File shoot_file, CameraPlugin plugin) {
         this.shoot_file = shoot_file;
+        this.plugin = plugin;
         range = 5;
 
         FileConfiguration yaml = YamlConfiguration.loadConfiguration(shoot_file);
@@ -57,6 +75,43 @@ public class Shoot {
             io.printStackTrace();
             return false;
         }
+    }
+
+    public void render(float timer) {
+        if (in_use) return;
+        in_use = true;
+
+        this.timer = timer;
+        timerTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            if (this.timer <= 0) {
+                Player companion = plugin.getNetManager().getAvailableCompanion();
+                if (companion != null) {
+                    companion.teleport(cameraLocation);
+                    plugin.getNetManager().screenshot(companion);
+                }
+
+                Bukkit.getOnlinePlayers().forEach((player) -> {
+                    if (player.getLocation().distance(cameraLocation) <= 20) {
+                        if (companion == null) {
+                            plugin.sendMessage(player, "command.render.no-account-online");
+                        } else {
+                            plugin.sendMessage(player, "command.render.render-complete");
+                            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+                        }
+                    }
+                });
+                timerTask.cancel();
+            }
+
+            Bukkit.getOnlinePlayers().forEach((player) -> {
+                if (player.getLocation().distance(cameraLocation) <= 20) {
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacy("Taking Photo in: " + (int) this.timer));
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1, 1);
+                }
+            });
+
+            this.timer--;
+        }, 20, 20);
     }
 
     //Getters
