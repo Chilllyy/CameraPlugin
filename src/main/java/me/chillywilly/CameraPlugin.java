@@ -5,7 +5,8 @@ import java.io.File;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.chillywilly.commands.TempCommand;
+import me.chillywilly.commands.CameraCommand;
+import me.chillywilly.events.PlayerJoinCheckCompanion;
 import me.chillywilly.shoots.ShootsManager;
 import me.chillywilly.util.BuiltinMessages;
 import me.chillywilly.util.NetManager;
@@ -38,9 +39,11 @@ public class CameraPlugin extends JavaPlugin {
         shoots = new ShootsManager(this);
 
         //getCommand("camera").setExecutor(new CameraCommand(this));
-        getCommand("camera").setExecutor(new TempCommand(this));
+        getCommand("camera").setExecutor(new CameraCommand(this));
 
         netManager = new NetManager(this);
+
+        getServer().getPluginManager().registerEvents(new PlayerJoinCheckCompanion(this), this);
     }
 
     @Override
