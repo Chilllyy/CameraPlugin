@@ -1,33 +1,82 @@
 package me.chillywilly.web;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
-import fi.iki.elonen.NanoHTTPD;
+import io.javalin.Javalin;
+import io.javalin.util.FileUtil;
+import io.javalin.util.JavalinLogger;
 import me.chillywilly.CameraPlugin;
 
-public class WebApp extends NanoHTTPD {
+public class WebApp {
     private CameraPlugin plugin;
-    public WebApp(CameraPlugin plugin, int port) throws IOException {
-        super(port);
+    private Javalin app;
+    private int port;
+    public WebApp(CameraPlugin plugin, int port) {
         this.plugin = plugin;
-        start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
-        plugin.getLogger().info("Started Webserver on port: " + port);
+        this.port = port;
+        JavalinLogger.startupInfo = false;
+        this.app = Javalin.create(config -> {
+            config.showJavalinBanner = false;
+        });
+        app.get("/", ctx -> {
+            File file = new File(CameraPlugin.web_root + "index.html");
+            String content = readFile(file);
+
+            ctx.html(content);
+        });
+
+        app.get("/hello/{name}", ctx -> {
+            File file = new File(CameraPlugin.web_root + "index.html");
+            String content = readFile(file);
+
+            content = content.replace("{test}", ctx.pathParam("name"));
+
+            ctx.html(content);
+        });
+
+        app.get("/upload", ctx -> {
+            File file = new File(CameraPlugin.web_root + "upload.html");
+            String content = readFile(file);
+
+            ctx.html(content);
+        });
+
+        app.post("/up_post", ctx -> {
+            ctx.uploadedFiles("files").forEach(file -> {
+                FileUtil.streamToFile(file.content(), CameraPlugin.upload_path + file.filename());
+                plugin.getLogger().info("New Upload: " + file.filename());
+                plugin.getLogger().info("Auth Code: " + ctx.formParams("auth").get(0));
+                //TODO use Auth code to determine, sort photo and add to DB
+            });
+        });
+
+        start();
     }
 
-    @Override
-    public Response serve(IHTTPSession session) {
-        String msg = "<html><body><h1> ";
-        
-        plugin.getLogger().info("Web Connected!");
-        Map<String, List<String>> parms = session.getParameters();
-        if (parms.get("username") == null) {
-            msg += "<form action='?' method='get'>\n  <p>Your name: <input type='text' name='username'></p>\n" + "</form>\n";
-        } else {
-            msg += "<p>Hello, " + parms.get("username").get(0) + "!</p>";
+    private String readFile(File file) {
+        StringBuilder builder = new StringBuilder();
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(file));
+            String str;
+            while ((str = in.readLine()) != null) {
+                builder.append(str);
+            }
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        msg = msg + "</h1></body></html>";
-        return newFixedLengthResponse(msg);
+        return builder.toString();
+    }
+
+    public void start() {
+        app.start(port);        
+    }
+
+    public void stop() {
+        app.stop();
+        plugin.getLogger().info("Stopped Webserver!");
     }
 }

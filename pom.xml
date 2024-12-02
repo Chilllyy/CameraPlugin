@@ -45,9 +45,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.nanohttpd</groupId>
-            <artifactId>nanohttpd-webserver</artifactId>
-            <version>2.3.1</version>
+            <groupId>io.javalin</groupId>
+            <artifactId>javalin</artifactId>
+            <version>6.3.0</version>
         </dependency>
     </dependencies>
 

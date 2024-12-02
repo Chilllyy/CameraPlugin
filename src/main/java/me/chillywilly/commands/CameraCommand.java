@@ -4,13 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.StringUtil;
 
 import me.chillywilly.CameraPlugin;
@@ -143,24 +141,23 @@ public class CameraCommand implements TabExecutor {
                     //Reload Module
                     switch (arg3[1].toLowerCase()) {
                         case "web":
-                            //TODO web reload
-                            return true;
+                            plugin.reloadWeb();
+                            break;
                         case "messages":
-                            plugin.resetMessageCache();
-                            plugin.sendMessage(player, "command.reload.reload-message-complete");
-                            return true;
+                            plugin.reloadMessages();
+                            break;
                         case "core":
-                            //TODO core reload
-                            plugin.reloadShoots();
-                            return true;
+                            plugin.reloadCore();
+                            break;
                         case "default":
-                            //All Reload, just falls off to the regular command
+                            plugin.reloadAll();
+                            break;
                     }
+                } else {
+                    plugin.reloadAll();
                 }
 
 
-                plugin.resetMessageCache();
-                plugin.reloadShoots();
                 plugin.sendMessage(player, "command.reload.reload-complete");
                 break;
             case "create":

@@ -20,6 +20,9 @@ public class BuiltinMessages {
     public BuiltinMessages(CameraPlugin plugin) {
         this.plugin = plugin;
         messages = new HashMap<String, Component>();
+        if (!new File(plugin.getDataFolder() + File.separator + "messages.yml").exists()) {
+            plugin.saveResource("messages.yml", false);
+        }
         fillCache();
     }
 
