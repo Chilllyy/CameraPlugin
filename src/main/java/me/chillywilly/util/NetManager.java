@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
@@ -18,11 +19,13 @@ public class NetManager implements PluginMessageListener {
     private CameraPlugin plugin;
     private List<Player> companion;
     private HashMap<Player, Boolean> busy;
+    private HashMap<Player, Location> prev_location;
 
     public NetManager (CameraPlugin plugin) {
         this.plugin = plugin;
         this.companion = new ArrayList<Player>();
         this.busy = new HashMap<Player, Boolean>();
+        this.prev_location = new HashMap<Player, Location>();
         enable();
     }
 
@@ -43,6 +46,7 @@ public class NetManager implements PluginMessageListener {
 
         companion.clear();
         busy.clear();
+        prev_location.clear();
     }
 
     public Player getAvailableCompanion() {
@@ -62,6 +66,16 @@ public class NetManager implements PluginMessageListener {
         if (!player.isOnline()) return;
 
         send(player, NetConstants.CHECK_FOR_COMPANION_ID);
+    }
+
+    public void setPreviousLocation(Player player, Location location) {
+        if (companion.contains(player)) {
+            prev_location.put(player, location);
+        }
+    }
+
+    public Location getPreviousLocation(Player player) {
+        return prev_location.get(player);
     }
 
     public void removeCompanion(Player player) {
@@ -91,6 +105,8 @@ public class NetManager implements PluginMessageListener {
         plugin.getLogger().info("Sent Packet on channel: " + channel);
     }
 
+    
+
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
         switch (channel) {
@@ -103,6 +119,10 @@ public class NetManager implements PluginMessageListener {
             case NetConstants.SCREENSHOT_TAKEN_ID:
                 //TODO Send message to all players
                 busy.put(player, false);
+                if (prev_location.containsKey(player)) {
+                    player.teleport(prev_location.get(player));
+                    prev_location.remove(player);
+                }
                 break;
             default:
                 plugin.getLogger().warning("Something weird happened, contact the dev with this info (Channel: " + channel + ", Player UUID: " + player.getUniqueId().toString() + ")");

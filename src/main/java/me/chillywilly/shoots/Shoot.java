@@ -86,6 +86,7 @@ public class Shoot {
             if (this.timer <= 0) {
                 Player companion = plugin.getNetManager().getAvailableCompanion();
                 if (companion != null) {
+                    plugin.getNetManager().setPreviousLocation(companion, companion.getLocation());
                     companion.teleport(cameraLocation);
                     plugin.getNetManager().screenshot(companion);
                 }
@@ -100,6 +101,7 @@ public class Shoot {
                         }
                     }
                 });
+                in_use = false;
                 timerTask.cancel();
             }
 
