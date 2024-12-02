@@ -1,6 +1,8 @@
 package me.chillywilly;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.BindException;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -10,6 +12,7 @@ import me.chillywilly.events.PlayerJoinCheckCompanion;
 import me.chillywilly.shoots.ShootsManager;
 import me.chillywilly.util.BuiltinMessages;
 import me.chillywilly.util.NetManager;
+import me.chillywilly.web.WebApp;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 
@@ -21,6 +24,7 @@ public class CameraPlugin extends JavaPlugin {
     private ShootsManager shoots;
 
     private NetManager netManager;
+    private WebApp web;
     @Override
     public void onEnable() {
         data_path = getDataFolder().getAbsolutePath() + File.separator + "data" + File.separator;
@@ -31,6 +35,14 @@ public class CameraPlugin extends JavaPlugin {
         }
         if (new File(shoots_path).mkdirs()) {
             getLogger().info("Successfully created shoots folder");
+        }
+
+        try {
+            web = new WebApp(this, 9090);
+        } catch (IOException e) {
+            getLogger().info("Ran into an issue while starting the webserver, disabling plugin");
+            setEnabled(false);
+            return;
         }
 
         saveResource("messages.yml", false);
@@ -48,10 +60,12 @@ public class CameraPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        netManager.disable();
-        messages.clearCache();
-        shoots.clearCache();
+        if (netManager != null) netManager.disable();
+        if (messages != null) messages.clearCache();
+        if (shoots != null) shoots.clearCache();
+        if (web != null) web.stop();
         getServer().getScheduler().cancelTasks(this);
+        getLogger().info("Successfully Disabled Plugin");
     }
 
     public void sendMessage(Player player, String key) {
