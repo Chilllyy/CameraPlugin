@@ -14,18 +14,21 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
 import me.chillywilly.CameraPlugin;
+import me.chillywilly.shoots.Shoot;
 
 public class NetManager implements PluginMessageListener {
     private CameraPlugin plugin;
     private List<Player> companion;
     private HashMap<Player, Boolean> busy;
     private HashMap<Player, Location> prev_location;
+    private HashMap<Integer, Shoot> auth_list;
 
     public NetManager (CameraPlugin plugin) {
         this.plugin = plugin;
         this.companion = new ArrayList<Player>();
         this.busy = new HashMap<Player, Boolean>();
         this.prev_location = new HashMap<Player, Location>();
+        this.auth_list = new HashMap<Integer, Shoot>();
         enable();
     }
 
@@ -47,6 +50,7 @@ public class NetManager implements PluginMessageListener {
         companion.clear();
         busy.clear();
         prev_location.clear();
+        auth_list.clear();
     }
 
     public Player getAvailableCompanion() {
@@ -85,11 +89,9 @@ public class NetManager implements PluginMessageListener {
         }
     }
 
-    public void screenshot(Player player) {
+    public void screenshot(Player player, Integer auth) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.write(0);
-        int auth = new Random().nextInt(32768);
-    
         out.writeInt(auth);
 
         send(player, NetConstants.SCREENSHOT_PACKET_ID, out);
@@ -105,7 +107,9 @@ public class NetManager implements PluginMessageListener {
         plugin.getLogger().info("Sent Packet on channel: " + channel);
     }
 
-    
+    public HashMap<Integer, Shoot> getAuthList() {
+        return auth_list;
+    }
 
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
