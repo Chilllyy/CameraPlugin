@@ -45,13 +45,16 @@ public class WebApp {
         });
 
         app.post("/up_post", ctx -> {
+            if (!ctx.isMultipartFormData()) {
+                ctx.status(400).result("Bad Request: Expected multipart/form-data");
+                return;
+            }
+
             ctx.uploadedFiles("files").forEach(file -> {
                 FileUtil.streamToFile(file.content(), CameraPlugin.upload_path + file.filename());
-                plugin.getLogger().info("New Upload: " + file.filename());
-                plugin.getLogger().info("Auth Code: " + ctx.formParams("auth").get(0));
-                //TODO use Auth code to determine, sort photo and add to DB
             });
         });
+        
 
         start();
     }
