@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import io.javalin.Javalin;
+import io.javalin.http.UploadedFile;
 import io.javalin.util.FileUtil;
 import io.javalin.util.JavalinLogger;
 import me.chillywilly.CameraPlugin;
@@ -50,10 +51,18 @@ public class WebApp {
                 return;
             }
 
-            ctx.uploadedFiles("files").forEach(file -> {
-                FileUtil.streamToFile(file.content(), CameraPlugin.upload_path + file.filename());
-            });
+            int auth = Integer.valueOf(ctx.formParam("auth"));
+
+            if (!plugin.getNetManager().getAuthList().containsKey(auth)) {
+                
+            }
+
+            UploadedFile file = ctx.uploadedFile("files"); //Get File
+            FileUtil.streamToFile(file.content(), CameraPlugin.upload_path + file.filename()); //Temporary, will be moved to end once we have a final filename
+
         });
+
+
         
 
         start();

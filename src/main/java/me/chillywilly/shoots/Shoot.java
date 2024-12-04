@@ -2,7 +2,7 @@ package me.chillywilly.shoots;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -86,9 +86,15 @@ public class Shoot {
             if (this.timer <= 0) {
                 Player companion = plugin.getNetManager().getAvailableCompanion();
                 if (companion != null) {
+                    int auth = new Random().nextInt(32768);
+                    while (plugin.getNetManager().getAuthList().containsKey(auth)) {
+                        auth = new Random().nextInt(32768);
+                    }
+
+                    plugin.getNetManager().getAuthList().put(auth, this);
                     plugin.getNetManager().setPreviousLocation(companion, companion.getLocation());
                     companion.teleport(cameraLocation);
-                    plugin.getNetManager().screenshot(companion);
+                    plugin.getNetManager().screenshot(companion, auth);
                 }
 
                 Bukkit.getOnlinePlayers().forEach((player) -> {
