@@ -2,8 +2,12 @@ package me.chillywilly.web;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Base64;
+import java.util.UUID;
 
 import io.javalin.Javalin;
 import io.javalin.http.UploadedFile;
@@ -38,6 +42,36 @@ public class WebApp {
             ctx.html(content);
         });
 
+        app.get("/image/{uuid}", ctx -> {
+            String html = "<html><body>";
+
+            String imageHtml = "<img src='data:image/png;base64, ";
+
+            String UUID = ctx.pathParam("uuid");
+
+            //TODO Get image and convert to base64
+
+            File file = new File(CameraPlugin.upload_path + UUID + ".png");
+            
+            String base64_image = "";
+            try {
+                FileInputStream fileInputStreamReader = new FileInputStream(file);
+                byte[] bytes = new byte[(int)file.length()];
+                fileInputStreamReader.read(bytes);
+                base64_image = new String(Base64.getEncoder().encode(bytes), "UTF-8");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            imageHtml += base64_image + "'/>";
+
+            html += imageHtml + "</body></html>";
+
+            ctx.status(200).html(html);
+        });
+
         app.get("/upload", ctx -> {
             File file = new File(CameraPlugin.web_root + "upload.html");
             String content = readFile(file);
@@ -51,19 +85,28 @@ public class WebApp {
                 return;
             }
 
-            int auth = Integer.valueOf(ctx.formParam("auth"));
-
+            int auth = 0;
+            try {   
+                auth = Integer.valueOf(ctx.formParam("auth"));
+            } catch (NumberFormatException e) {
+                plugin.getLogger().warning("Authorization code provided cannot be converted to number: " + ctx.formParam("auth"));
+            }
+            
             if (!plugin.getNetManager().getAuthList().containsKey(auth)) {
-                
+                ctx.status(401).result("Unauthorized: No Authorization key provided");
+                return;
             }
 
             UploadedFile file = ctx.uploadedFile("files"); //Get File
-            FileUtil.streamToFile(file.content(), CameraPlugin.upload_path + file.filename()); //Temporary, will be moved to end once we have a final filename
 
-        });
+            UUID uuid = UUID.randomUUID();
 
+            FileUtil.streamToFile(file.content(), CameraPlugin.upload_path + uuid.toString() + ".png");
 
-        
+            plugin.getNetManager().getAuthList().get(auth).uploadImage(uuid);
+
+            plugin.getLogger().info("Recieved Image and uploaded as: " + uuid.toString());
+        });        
 
         start();
     }

@@ -1,13 +1,10 @@
 package me.chillywilly;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.BindException;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import io.javalin.Javalin;
 import me.chillywilly.commands.CameraCommand;
 import me.chillywilly.events.PlayerJoinCheckCompanion;
 import me.chillywilly.shoots.ShootsManager;
@@ -97,6 +94,13 @@ public class CameraPlugin extends JavaPlugin {
         Component message = messages.getMessage(key);
         Audience aud = (Audience) player;
 
+        aud.sendMessage(message);
+    }
+
+    public void sendURLMessage(Player player, String URL) {
+        Component message = messages.getMessageReplace("command.render.render-complete", "{URL}", URL);
+        Audience aud = (Audience) player;
+        getLogger().info("Sent Msg");
         aud.sendMessage(message);
     }
 

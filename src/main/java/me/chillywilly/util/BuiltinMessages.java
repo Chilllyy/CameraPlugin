@@ -85,6 +85,44 @@ public class BuiltinMessages {
         return message;
     }
 
+    public Component getMessageReplace(String key, String from, String to) {
+        Component message = loadFromMem(key);
+        if (message != null) return message;
+
+        FileConfiguration file = getMessageFile();
+
+        String file_msg = file.getString(key);
+
+        if (!file.contains(key)) {
+            Reader reader = new InputStreamReader(plugin.getResource("messages.yml"));
+            FileConfiguration internal_file = YamlConfiguration.loadConfiguration(reader);
+
+            file_msg = internal_file.getString(key);
+            file.set(key, file_msg);
+            try {
+                file.save(plugin.getDataFolder() + File.separator + "messages.yml");
+                plugin.getLogger().info("Unable to find key (" + key + ") in messages.yml, loaded from internal.");
+            } catch (IOException io) {
+                plugin.getLogger().warning("Unable to set key (" + key + ") in messages.yml");
+                io.printStackTrace();
+            }
+        }
+
+        if (file_msg.contains("{prefix}") && key != "plugin.prefix") {
+            Component prefix = getMessage("plugin.prefix");
+            String prefix_string = MiniMessage.miniMessage().serialize(prefix);
+            file_msg = file_msg.replace("{prefix}", prefix_string);
+        }
+
+        file_msg = file_msg.replace(from, to);
+
+        String converted_msg = convertLegacyToMiniMessage(file_msg);
+
+        message = MiniMessage.miniMessage().deserialize(converted_msg);
+        messages.put(key, message);
+        return message;
+    }
+
     private FileConfiguration getMessageFile() {
         File file = new File(plugin.getDataFolder() + File.separator + "messages.yml");
         return YamlConfiguration.loadConfiguration(file);

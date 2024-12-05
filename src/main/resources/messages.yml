@@ -10,7 +10,7 @@ command:
     sense-complete: "{prefix} <white>Successfully updated Sense location"
     range-complete: "{prefix} <white>Successfully updated Sense range"
   render:
-    render-complete: "{prefix} <green>Successfully rendered"
+    render-complete: "{prefix} <green>Successfully rendered!<white>: {URL}"
     no-account-online: "{prefix} <red>There is currently no camera online, please contact an administrator!"
   manage:
     rename:
