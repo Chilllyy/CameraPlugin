@@ -14,15 +14,6 @@ public class CameraCommandUtils {
         }
     }
 
-    public static void setupShootTimer(Player player, String shootname, Float timer) {
-        CameraPlugin.plugin.getLogger().info("Setup Shoot Timer: (" + shootname + ", " + timer + ")");
-    }
-
-    public static void setupShootRange(Player player, String shootname, Float range) {
-        CameraPlugin.plugin.getLogger().info("Setup Shoot Range: (" + shootname + ", " + range + ")");
-    }
-
-
     public static void createShoot(Player player, String shootname, String type) {
         CameraPlugin.plugin.getLogger().info("Create Shoot: (" + shootname + ", " + type + ")");
     }
