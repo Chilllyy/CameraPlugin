@@ -106,17 +106,17 @@ public class CameraCommandUtils {
 
     public static void reload(CommandSender sender) {
         CameraPlugin.plugin.getLogger().info("Reload All!");
-        CameraPlugin.plugin.reload();
+        CameraPlugin.plugin.reload(0);
         //TODO reload web
     }
 
     public static void reloadWeb(CommandSender sender) {
         CameraPlugin.plugin.getLogger().info("Reload Web!");
-        //TODO Reload web
+        CameraPlugin.plugin.reload(2);
     }
 
     public static void reloadCore(CommandSender sender) {
         CameraPlugin.plugin.getLogger().info("Reload Core!");
-        CameraPlugin.plugin.reload();
+        CameraPlugin.plugin.reload(1);
     }
 }
