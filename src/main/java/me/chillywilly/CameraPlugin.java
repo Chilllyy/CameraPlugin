@@ -1,8 +1,10 @@
 package me.chillywilly;
 
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.chillywilly.command.CameraCommand;
+import me.chillywilly.network.CompanionManager;
 import me.chillywilly.shoots.ShootManager;
 import me.chillywilly.util.PluginConst;
 
@@ -24,6 +26,8 @@ public class CameraPlugin extends JavaPlugin {
 
         PluginConst.Storage.init(); //Init all storage folders and constant variables (For accessing files)
         shootManager = new ShootManager(); //Init Shoot Manager
+
+        getServer().getPluginManager().registerEvents((Listener) new CompanionManager(), this);
     }
 
     public void reload() {
