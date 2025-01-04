@@ -10,12 +10,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
 import me.chillywilly.CameraPlugin;
+import me.chillywilly.shoots.ShootInfo;
 
 public class CameraCommand implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length < 1)  {
-            sender.sendMessage("Usage: /camera (setup | create | delete | rename | render)");
+            sender.sendMessage("Usage: /camera (setup | create | delete | rename | render | reload)");
             return true;
         }
         String subcommand = args[0];
@@ -36,6 +37,9 @@ public class CameraCommand implements TabExecutor {
                 case "render":
                     sender.sendMessage("Usage: /camera render (name) [Timer]");
                     return true;
+                case "reload":
+                    CameraCommandUtils.reload(sender);
+                    return true;
                 default:
                     sender.sendMessage("Usage: /camera (setup | create | delete | rename | render)");
                     return true;
@@ -47,7 +51,7 @@ public class CameraCommand implements TabExecutor {
         if (args.length < 3) {
             switch (subcommand.toLowerCase()) {
                 case "setup":
-                    sender.sendMessage("Usage: /camera setup (name) (range | camera | timer | shootLocation (rollercoaster))");
+                    sender.sendMessage("Usage: /camera setup (name) (range | camera | timer | sense | shootLocation (rollercoaster))");
                     return true;
                 case "create":
                     break; //3rd argument is optional, not required, defaults to static
@@ -58,6 +62,15 @@ public class CameraCommand implements TabExecutor {
                     return true;
                 case "render":
                     break; //3rd argument is optional, not required, defaults to 5
+                case "reload":
+                    if (args[1].equalsIgnoreCase("web")) {
+                        CameraCommandUtils.reloadWeb(sender);
+                    } else if (args[1].equalsIgnoreCase("core")) {
+                        CameraCommandUtils.reloadCore(sender);
+                    } else {
+                        CameraCommandUtils.reload(sender);
+                    }
+                    return true;
                 default:
                     sender.sendMessage("Usage: /camera (setup | create | delete | rename | render)");
                     return true;
@@ -78,14 +91,16 @@ public class CameraCommand implements TabExecutor {
                     }
                     break;
                 case "create":
-                    switch (args[2].toLowerCase()) {
-                        case "static":
-                            break; //Do nothing, this is correct
-                        case "rollercoaster":  
-                            break; //Do nothing, this is correct
-                        default:
-                            sender.sendMessage("Usage: /camera create (name) [static | rollercoaster]");
-                            return true;
+                    if (args.length > 2) {
+                        switch (args[2].toLowerCase()) {
+                            case "static":
+                                break; //Do nothing, this is correct
+                            case "rollercoaster":  
+                                break; //Do nothing, this is correct
+                            default:
+                                sender.sendMessage("Usage: /camera create (name) [static | rollercoaster]");
+                                return true;
+                        }
                     }
                     break;
                 case "delete":
@@ -123,21 +138,21 @@ public class CameraCommand implements TabExecutor {
             case "setup":
                 if (args.length >= 4) {
                     try {
-                        CameraCommandUtils.setupShoot(player, shoot_name, args[2], Float.parseFloat(args[3]));
+                        CameraCommandUtils.setupShoot(player, shoot_name, args[2].toLowerCase(), Float.parseFloat(args[3]));
                         return true;
                     } catch (NumberFormatException e) {
                         player.sendMessage("Provided item is not a number: " + args[3]);
                         return true;
                     }
                 }
-                CameraCommandUtils.setupShoot(player, subcommand, args[2], null);
+                CameraCommandUtils.setupShoot(player, shoot_name, args[2].toLowerCase(), null);
                 return true;
             case "create":
                 if (args.length < 3) { 
                     CameraCommandUtils.createShoot(player, shoot_name, "static"); //Static is the default 
                     return true;
                 }
-                CameraCommandUtils.createShoot(player, shoot_name, args[2]);
+                CameraCommandUtils.createShoot(player, shoot_name, args[2].toLowerCase());
                 return true;
             case "rename":
                 CameraCommandUtils.renameShoot(player, shoot_name, args[2]);
@@ -158,19 +173,23 @@ public class CameraCommand implements TabExecutor {
         List<String> ret = new ArrayList<String>();
         switch (args.length) {
             case 1:
-                StringUtil.copyPartialMatches(args[0], List.of("setup", "create", "delete", "rename", "render"), ret);
+                StringUtil.copyPartialMatches(args[0], List.of("setup", "create", "delete", "rename", "render", "reload"), ret);
                 break;
             case 2:
-                if (args[0].equalsIgnoreCase("create")) return List.of("New Photoshoot"); //don't return list of shoots when user is creating one, that doesn't need the clutter
-                //TODO get list of shoots
+                if (args[0].equalsIgnoreCase("create")) return List.of("New Photoshoot"); //don't return list of shoots when user is creating one
+                if (args[0].equalsIgnoreCase("reload")) return List.of("web", "core", "all");
+                StringUtil.copyPartialMatches(args[1], CameraPlugin.plugin.shootManager.getShootNames(), ret);
                 break;
             case 3:
-                //TODO (/camera (args[0]) (args[1]) (THIS IS THE ARG))
+                //(/camera (args[0]) (args[1]) (THIS IS THE ARG))
                 String shoot_identifier = args[1];
                 switch (args[0]) {
                     case "setup":
-                        //TODO add check for rollercoaster and return shootLocation or not
-                        StringUtil.copyPartialMatches(args[2], List.of("range", "camera", "timer", "shootLocation"), ret);
+                        ShootInfo shoot = CameraPlugin.plugin.shootManager.getShoot(shoot_identifier);
+                        if (shoot != null && shoot.isRollercoaster()) {
+                            StringUtil.copyPartialMatches(args[2], List.of("range", "camera", "timer", "sense", "shootLocation"), ret);
+                        }
+                        StringUtil.copyPartialMatches(args[2], List.of("range", "camera", "timer", "sense"), ret);
                         break;
                     case "create":
                         StringUtil.copyPartialMatches(args[2], List.of("static", "rollercoaster"), ret);
@@ -184,7 +203,7 @@ public class CameraCommand implements TabExecutor {
                 }
                 break;
             case 4:
-                //TODO (/camera (args[0]) (args[1]) (args[2]) (THIS IS THE ARG))
+                //(/camera (args[0]) (args[1]) (args[2]) (THIS IS THE ARG))
                 if (args[0].equalsIgnoreCase("setup") && args[2].equalsIgnoreCase("timer")) {
                     return List.of("Timer");
                 } else {
