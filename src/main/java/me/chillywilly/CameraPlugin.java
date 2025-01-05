@@ -3,20 +3,20 @@ package me.chillywilly;
 import java.util.Collection;
 
 import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.chillywilly.command.CameraCommand;
 import me.chillywilly.network.CompanionManager;
 import me.chillywilly.shoots.ShootInfo;
 import me.chillywilly.shoots.ShootManager;
+import me.chillywilly.shoots.ShootRunnable;
 import me.chillywilly.util.PluginConst;
 
 public class CameraPlugin extends JavaPlugin {
 
     public static CameraPlugin plugin;
     public ShootManager shootManager;
-    private CompanionManager companionManager;
+    public CompanionManager companionManager;
 
     @Override
     public void onEnable() {
@@ -33,7 +33,7 @@ public class CameraPlugin extends JavaPlugin {
         shootManager = new ShootManager(); //Init Shoot Manager
 
         companionManager = new CompanionManager();
-        getServer().getPluginManager().registerEvents((Listener) companionManager, this);
+        getServer().getPluginManager().registerEvents(new CompanionManager(), this);
 
         Bukkit.getScheduler().runTaskTimer(this, () -> {
             /*
@@ -48,10 +48,8 @@ public class CameraPlugin extends JavaPlugin {
                             //TODO start shoot
                             player.sendMessage("Start Shoot Countdown!");
 
-                            float timer = shoot.getTimer();
-
-                            
-                        } 
+                            new ShootRunnable(shoot);
+                        }
                     });
                 }
             });

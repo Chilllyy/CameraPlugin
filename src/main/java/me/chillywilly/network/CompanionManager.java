@@ -1,6 +1,5 @@
 package me.chillywilly.network;
 
-import java.net.http.WebSocket.Listener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +7,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.messaging.PluginMessageListener;
@@ -82,9 +82,11 @@ public class CompanionManager implements Listener, PluginMessageListener {
 
     @EventHandler
     public void joinEvent(PlayerJoinEvent event) { //Join event, sends companion check after player joins
+        CameraPlugin.plugin.getLogger().info("Player Join!");
         Bukkit.getScheduler().runTaskLater(CameraPlugin.plugin, () -> {
             send(event.getPlayer(), PluginConst.Network.CHECK_FOR_COMPANION_ID);
-        }, 5000);
+            CameraPlugin.plugin.getLogger().info("Sent Packet!");
+        }, 100);
     }
 
     @EventHandler
