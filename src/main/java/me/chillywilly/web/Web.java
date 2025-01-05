@@ -56,5 +56,17 @@ public class Web {
 
             CameraPlugin.plugin.companionManager.authUploadedFile(auth, uuid);
         });
+
+        start();
+    }
+
+    public void start() {
+        app.start(port);
+        CameraPlugin.plugin.getLogger().info("Started Webserver");
+    }
+
+    public void stop() {
+        app.stop();
+        CameraPlugin.plugin.getLogger().info("Stopped Webserver");
     }
 }

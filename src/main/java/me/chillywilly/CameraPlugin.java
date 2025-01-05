@@ -11,12 +11,14 @@ import me.chillywilly.shoots.ShootInfo;
 import me.chillywilly.shoots.ShootManager;
 import me.chillywilly.shoots.ShootRunnable;
 import me.chillywilly.util.PluginConst;
+import me.chillywilly.web.Web;
 
 public class CameraPlugin extends JavaPlugin {
 
     public static CameraPlugin plugin;
     public ShootManager shootManager;
     public CompanionManager companionManager;
+    private Web web;
 
     @Override
     public void onEnable() {
@@ -53,6 +55,8 @@ public class CameraPlugin extends JavaPlugin {
                 }
             });
         }, 0, 40);
+
+        web = new Web(getConfig().getInt("web.port"));
     }
 
     public void reload(int reload) {
@@ -66,6 +70,7 @@ public class CameraPlugin extends JavaPlugin {
                 shootManager.reload();
                 companionManager.reload();
                 reloadConfig();
+                reloadWeb();
                 break;
             case 1:
                 shootManager.reload();
@@ -73,8 +78,15 @@ public class CameraPlugin extends JavaPlugin {
                 reloadConfig();
                 break;
             case 2:
-                //TODO reload web
+                reloadWeb();
                 break;
         }
+    }
+
+    private void reloadWeb() {
+        web.stop();
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            web = new Web(plugin.getConfig().getInt("web.port"));
+        }, 100);
     }
 }
