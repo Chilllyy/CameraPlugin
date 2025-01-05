@@ -2,6 +2,7 @@ package me.chillywilly.shoots;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -79,5 +80,9 @@ public class ShootManager {
             return shoots.get(shoot_files.get(string));
         }
         return null;
+    }
+
+    public Collection<ShootInfo> getShoots() {
+        return shoots.values();
     }
 }

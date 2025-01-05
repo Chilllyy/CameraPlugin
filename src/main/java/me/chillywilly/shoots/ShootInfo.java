@@ -2,7 +2,6 @@ package me.chillywilly.shoots;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;

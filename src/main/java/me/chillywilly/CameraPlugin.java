@@ -1,10 +1,14 @@
 package me.chillywilly;
 
+import java.util.Collection;
+
+import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.chillywilly.command.CameraCommand;
 import me.chillywilly.network.CompanionManager;
+import me.chillywilly.shoots.ShootInfo;
 import me.chillywilly.shoots.ShootManager;
 import me.chillywilly.util.PluginConst;
 
@@ -30,6 +34,28 @@ public class CameraPlugin extends JavaPlugin {
 
         companionManager = new CompanionManager();
         getServer().getPluginManager().registerEvents((Listener) companionManager, this);
+
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
+            /*
+             * This runs every 2 seconds or so, it checks all of the shoot locations and sees if a player is nearby
+             */
+
+            Collection<ShootInfo> shoots = shootManager.getShoots();
+            Bukkit.getOnlinePlayers().forEach((player) -> {
+                if (!companionManager.isCompanion(player)) {
+                    shoots.forEach((shoot) -> {
+                        if (player.getLocation().distance(shoot.getSenseLocation()) <= shoot.getRange()) {
+                            //TODO start shoot
+                            player.sendMessage("Start Shoot Countdown!");
+
+                            float timer = shoot.getTimer();
+
+                            
+                        } 
+                    });
+                }
+            });
+        }, 0, 40);
     }
 
     public void reload(int reload) {

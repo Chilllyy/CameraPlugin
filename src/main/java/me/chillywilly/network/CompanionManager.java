@@ -47,6 +47,10 @@ public class CompanionManager implements Listener, PluginMessageListener {
 
     //Companion Control
 
+    public boolean isCompanion(Player player) {
+        return companions.contains(player);
+    }
+
     public Player getNextAvailableCompanion() {
         for (int x = 0; x < companions.size(); x++) {
             Player player = companions.get(x);
