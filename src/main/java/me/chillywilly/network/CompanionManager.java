@@ -1,6 +1,7 @@
 package me.chillywilly.network;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -81,11 +82,13 @@ public class CompanionManager implements Listener, PluginMessageListener {
 
     public void generateAndSendScreenshot(Player player, ShootInfo info) {
         int auth = (int) Math.round(Math.random() * 32768);
+        String message = "http://panel.chillywilly.me";
 
         ByteArrayDataOutput bytes = ByteStreams.newDataOutput();
-        bytes.writeInt(0);
+        byte[] string_bytes = message.getBytes();
+        bytes.write(string_bytes.length);
+        bytes.write(string_bytes);
         bytes.writeInt(auth);
-
         send(player, PluginConst.Network.SCREENSHOT_PACKET_ID, bytes.toByteArray());
     }
 
