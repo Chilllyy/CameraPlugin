@@ -1,9 +1,9 @@
 package me.chillywilly.network;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -18,6 +18,7 @@ import com.google.common.io.ByteStreams;
 
 import me.chillywilly.CameraPlugin;
 import me.chillywilly.shoots.ShootInfo;
+import me.chillywilly.shoots.ShootRunnable;
 import me.chillywilly.util.PluginConst;
 
 public class CompanionManager implements Listener, PluginMessageListener {
@@ -26,10 +27,13 @@ public class CompanionManager implements Listener, PluginMessageListener {
 
     private HashMap<Player, Boolean> busy_map;
 
+    private HashMap<Integer, ShootRunnable> running_shoots;
+
     public CompanionManager() {
         CameraPlugin plugin = CameraPlugin.plugin;
         companions = new ArrayList<Player>();
         busy_map = new HashMap<Player, Boolean>();
+        running_shoots = new HashMap<Integer, ShootRunnable>();
         plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, PluginConst.Network.SCREENSHOT_PACKET_ID);
         plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, PluginConst.Network.CHECK_FOR_COMPANION_ID);
 
@@ -80,16 +84,39 @@ public class CompanionManager implements Listener, PluginMessageListener {
         }
     }
 
-    public void generateAndSendScreenshot(Player player, ShootInfo info) {
+    public void generateAndSendScreenshot(Player player, ShootInfo info, ShootRunnable runnable) {
         int auth = (int) Math.round(Math.random() * 32768);
-        String message = "http://panel.chillywilly.me";
+        running_shoots.put(auth, runnable);
+        String url = CameraPlugin.plugin.getConfig().getString("web.url");
 
         ByteArrayDataOutput bytes = ByteStreams.newDataOutput();
-        byte[] string_bytes = message.getBytes();
-        bytes.write(string_bytes.length);
-        bytes.write(string_bytes);
+        byte[] url_bytes = url.getBytes();
+        bytes.write(url_bytes.length);
+        bytes.write(url_bytes);
         bytes.writeInt(auth);
         send(player, PluginConst.Network.SCREENSHOT_PACKET_ID, bytes.toByteArray());
+    }
+
+    public void authUploadedFile(Integer auth, UUID uuid) {
+        ShootRunnable runnable = running_shoots.get(auth);
+        String url = CameraPlugin.plugin.getConfig().getString("web.url") + "/image/" + uuid.toString();
+        if (runnable != null) {
+            runnable.getPlayers().forEach((player) -> {
+                if (player.isOnline()) {
+                    player.sendMessage("Image successfully uploaded: " + url);
+                }
+            });
+        }
+    }
+
+    //Getters
+
+    public ShootRunnable getRunningEvent(Integer auth) {
+        return running_shoots.get(auth);
+    }
+
+    public boolean hasAuthKey(Integer auth) {
+        return running_shoots.containsKey(auth);
     }
 
 

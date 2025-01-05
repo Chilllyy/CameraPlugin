@@ -65,10 +65,12 @@ public class CameraPlugin extends JavaPlugin {
             case 0:
                 shootManager.reload();
                 companionManager.reload();
+                reloadConfig();
                 break;
             case 1:
                 shootManager.reload();
                 companionManager.reload();
+                reloadConfig();
                 break;
             case 2:
                 //TODO reload web
