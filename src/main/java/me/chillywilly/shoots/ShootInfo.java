@@ -18,6 +18,8 @@ public class ShootInfo {
     private Location sense_location;
     private Location shoot_location; //shoot location, only for rollercoaster type
 
+    private boolean in_use;
+
     private float range;
     private float timer;
 
@@ -131,6 +133,10 @@ public class ShootInfo {
         return save();
     }
 
+    public void setInUse(boolean in_use) {
+        this.in_use = in_use;
+    }
+
     //Getters
 
     public float getRange() {
@@ -165,5 +171,9 @@ public class ShootInfo {
 
     public File getFile() {
         return file;
+    }
+
+    public boolean in_use() {
+        return in_use;
     }
 }

@@ -84,7 +84,6 @@ public class CompanionManager implements Listener, PluginMessageListener {
     public void joinEvent(PlayerJoinEvent event) { //Join event, sends companion check after player joins
         Bukkit.getScheduler().runTaskLater(CameraPlugin.plugin, () -> {
             send(event.getPlayer(), PluginConst.Network.CHECK_FOR_COMPANION_ID);
-            CameraPlugin.plugin.getLogger().info("Sent Packet!");
         }, 100);
     }
 
@@ -101,9 +100,11 @@ public class CompanionManager implements Listener, PluginMessageListener {
     public void onPluginMessageReceived(String channel, Player player, byte[] message) { //Plugin channel message received, used to receive packets
         switch (channel) {
             case PluginConst.Network.COMPANION_FOUND_ID:
-                companions.add(player);
-                busy_map.put(player, false);
-                CameraPlugin.plugin.getLogger().info("Found companion! (" + player.getName() + ")");
+                if (!companions.contains(player)) {
+                    companions.add(player);
+                    busy_map.put(player, false);
+                    CameraPlugin.plugin.getLogger().info("Found companion! (" + player.getName() + ")");
+                }
                 break;
             case PluginConst.Network.SCREENSHOT_TAKEN_ID:
                 busy_map.put(player, false);

@@ -16,6 +16,7 @@ public class ShootRunnable implements Runnable {
         this.info = info;
         countdown_clock = info.getTimer();
         companion = CameraPlugin.plugin.companionManager.getNextAvailableCompanion();
+        info.setInUse(true);
 
         if (companion != null) {
             companion.teleport(info.getCameraLocation());
