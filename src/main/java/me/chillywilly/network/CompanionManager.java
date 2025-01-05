@@ -12,9 +12,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
+import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
 import me.chillywilly.CameraPlugin;
+import me.chillywilly.shoots.ShootInfo;
 import me.chillywilly.util.PluginConst;
 
 public class CompanionManager implements Listener, PluginMessageListener {
@@ -75,6 +77,14 @@ public class CompanionManager implements Listener, PluginMessageListener {
         if (companions.contains(player)) {
             send(player, PluginConst.Network.SCREENSHOT_PACKET_ID);
         }
+    }
+
+    public void generateAndSendScreenshot(Player player, ShootInfo info) {
+        int auth = (int) Math.round(Math.random() * 32768);
+
+        ByteArrayDataOutput bytes = ByteStreams.newDataOutput();
+        bytes.writeInt(0);
+        bytes.writeInt(auth);
     }
 
 

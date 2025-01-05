@@ -1,6 +1,7 @@
 package me.chillywilly.shoots;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.chillywilly.CameraPlugin;
@@ -35,8 +36,15 @@ public class ShootRunnable implements Runnable {
 
     @Override
     public void run() {
-        if (countdown_clock < 1) { //Timer Complete
+        if (countdown_clock < 0) { //Timer Complete
             //Timer is done, take screenshot
+            Bukkit.getOnlinePlayers().forEach((player) -> {
+                if (player.getLocation().distance(info.getSenseLocation()) <= 20) {
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1, 1);
+                }
+            });
+
+            CameraPlugin.plugin.companionManager.generateAndSendScreenshot(companion, info);
 
             if (assignedTaskId != null) Bukkit.getScheduler().cancelTask(assignedTaskId);
             return;
@@ -45,6 +53,7 @@ public class ShootRunnable implements Runnable {
         Bukkit.getOnlinePlayers().forEach((player) -> {
             if (player.getLocation().distance(info.getSenseLocation()) <= 20) {
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacy("Taking Photo in: " + (int) this.countdown_clock));
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
             }
         });
         
