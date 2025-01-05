@@ -82,7 +82,6 @@ public class CompanionManager implements Listener, PluginMessageListener {
 
     @EventHandler
     public void joinEvent(PlayerJoinEvent event) { //Join event, sends companion check after player joins
-        CameraPlugin.plugin.getLogger().info("Player Join!");
         Bukkit.getScheduler().runTaskLater(CameraPlugin.plugin, () -> {
             send(event.getPlayer(), PluginConst.Network.CHECK_FOR_COMPANION_ID);
             CameraPlugin.plugin.getLogger().info("Sent Packet!");
