@@ -1,5 +1,10 @@
 package me.chillywilly.web;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.UUID;
 
 import io.javalin.Javalin;
@@ -28,6 +33,28 @@ public class Web {
             String UUID = ctx.pathParam("uuid");
 
             //TODO get file stuff and convert to base64
+
+            File file = new File(PluginConst.Storage.images_folder, UUID + ".png");
+
+            String base64_image = "";
+            try {
+                FileInputStream fileInputStreamReader = new FileInputStream(file);
+                byte[] bytes = new byte[(int)file.length()];
+                fileInputStreamReader.read(bytes);
+                base64_image = new String(Base64.getEncoder().encode(bytes), "UTF-8");
+            } catch (FileNotFoundException e) {
+                CameraPlugin.plugin.getLogger().warning("Somebody tried to access an image that doesn't exist: " + UUID);
+                e.printStackTrace();
+            } catch (IOException e) {
+                CameraPlugin.plugin.getLogger().warning("Unable to read image from disk: " + UUID);
+                e.printStackTrace();
+            }
+
+            imageHtml += base64_image + "'/>";
+
+            html += imageHtml + "</body></html>";
+
+            ctx.status(200).html(html);
         });
 
         app.post("/up_post", ctx -> {
@@ -52,7 +79,7 @@ public class Web {
 
             //TODO check for existing UUID
 
-            FileUtil.streamToFile(file.content(), PluginConst.Storage.images_folder + uuid.toString() + ".png");
+            FileUtil.streamToFile(file.content(), PluginConst.Storage.images_folder + File.separator + uuid.toString() + ".png");
 
             CameraPlugin.plugin.companionManager.authUploadedFile(auth, uuid);
         });
