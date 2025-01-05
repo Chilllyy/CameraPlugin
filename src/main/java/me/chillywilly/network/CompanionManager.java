@@ -20,6 +20,8 @@ import me.chillywilly.CameraPlugin;
 import me.chillywilly.shoots.ShootInfo;
 import me.chillywilly.shoots.ShootRunnable;
 import me.chillywilly.util.PluginConst;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class CompanionManager implements Listener, PluginMessageListener {
 
@@ -103,7 +105,9 @@ public class CompanionManager implements Listener, PluginMessageListener {
         if (runnable != null) {
             runnable.getPlayers().forEach((player) -> {
                 if (player.isOnline()) {
-                    player.sendMessage("Image successfully uploaded: " + url);
+                    TextComponent text = new TextComponent("Image successfully uploaded: " + url);
+                    text.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+                    player.spigot().sendMessage(text);
                 }
             });
         }
