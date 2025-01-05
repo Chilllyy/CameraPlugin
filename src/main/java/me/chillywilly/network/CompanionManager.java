@@ -85,6 +85,8 @@ public class CompanionManager implements Listener, PluginMessageListener {
         ByteArrayDataOutput bytes = ByteStreams.newDataOutput();
         bytes.writeInt(0);
         bytes.writeInt(auth);
+
+        send(player, PluginConst.Network.SCREENSHOT_PACKET_ID, bytes.toByteArray());
     }
 
 
