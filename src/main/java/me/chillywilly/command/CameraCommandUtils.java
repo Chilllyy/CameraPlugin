@@ -1,13 +1,17 @@
 package me.chillywilly.command;
 
+import java.io.File;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.chillywilly.CameraPlugin;
 import me.chillywilly.shoots.ShootInfo;
+import me.chillywilly.shoots.ShootRunnable;
+import me.chillywilly.util.PluginConst;
 
 public class CameraCommandUtils {
-    public static void setupShoot(Player player, String shootname, String setup, Float argument) {
+    public static void setupShoot(Player player, String shootname, String setup, String argument) {
         CameraPlugin.plugin.getLogger().info("Setup Shoot: (" + shootname + ", " + setup + ", " + argument + ")");
         ShootInfo info = CameraPlugin.plugin.shootManager.getShoot(shootname);
         if (info == null) {
@@ -44,8 +48,14 @@ public class CameraCommandUtils {
                 return;
             case "range":
                 if (argument != null) {
-                    if (info.setRange(argument)) {
-                        player.sendMessage("Successfully set range");
+                    try {
+                        Float range = Float.parseFloat(argument);
+                        if (info.setRange(range)) {
+                            player.sendMessage("Successfully set range");
+                            return;
+                        }
+                    } catch (NumberFormatException e) {
+                        player.sendMessage("Unknown number provided");
                         return;
                     }
                     player.sendMessage("Unable to set range");
@@ -55,14 +65,35 @@ public class CameraCommandUtils {
                 return;
             case "timer":
                 if (argument != null) {
-                    if (info.setTimer(argument)) {
-                        player.sendMessage("Successfully set timer");
+                    try {
+                        Float timer = Float.parseFloat(argument);
+                        if (info.setTimer(timer)) {
+                            player.sendMessage("Successfully set range");
+                            return;
+                        }
+                    } catch (NumberFormatException e) {
+                        player.sendMessage("Unknown number provided");
                         return;
                     }
                     player.sendMessage("Unable to set timer");
                     return;
                 }
                 player.sendMessage("Argument is not a number");
+                return;
+            case "overlay":
+                File[] overlays = PluginConst.Storage.overlay_folder.listFiles();
+                for (File overlay : overlays) {
+                    if (overlay.getName().split("\\.")[0].equalsIgnoreCase(argument)) {
+                        if (info.setOverlay(argument)) {
+                            player.sendMessage("Successfully set overlay");
+                            return;
+                        }
+                        player.sendMessage("Unable to set overlay");
+                        return;
+                    }
+                }
+
+                player.sendMessage("No overlay found by that name");
                 return;
         }
     }
@@ -101,22 +132,24 @@ public class CameraCommandUtils {
 
     public static void render(CommandSender sender, String shootname, Float timer) {
         CameraPlugin.plugin.getLogger().info("Render Shoot: (" + shootname + ", " + timer + ")");
+        ShootInfo info = CameraPlugin.plugin.shootManager.getShoot(shootname);
+        new ShootRunnable(info);
+        sender.sendMessage("Successfully rendered!");
     }
 
 
     public static void reload(CommandSender sender) {
-        CameraPlugin.plugin.getLogger().info("Reload All!");
         CameraPlugin.plugin.reload(0);
-        //TODO reload web
+        sender.sendMessage("Reloaded All");
     }
 
     public static void reloadWeb(CommandSender sender) {
-        CameraPlugin.plugin.getLogger().info("Reload Web!");
         CameraPlugin.plugin.reload(2);
+        sender.sendMessage("Reloaded Web");
     }
 
     public static void reloadCore(CommandSender sender) {
-        CameraPlugin.plugin.getLogger().info("Reload Core!");
         CameraPlugin.plugin.reload(1);
+        sender.sendMessage("Reloaded Core");
     }
 }

@@ -20,12 +20,14 @@ public class PluginConst {
         public static final File images_folder = new File(data_folder, "images");
         public static final File shoots_folder = new File(data_folder, "shoots");
         public static final File web_folder = new File(data_folder, "web");
+        public static final File overlay_folder = new File(data_folder, "overlays");
 
         public static void init() {
             data_folder.mkdirs();
             images_folder.mkdirs();
             shoots_folder.mkdirs();
             web_folder.mkdirs();
+            overlay_folder.mkdirs();
         }
     }
 }

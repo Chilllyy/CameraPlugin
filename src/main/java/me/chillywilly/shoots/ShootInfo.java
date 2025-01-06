@@ -17,6 +17,7 @@ public class ShootInfo {
     private Location camera_location;
     private Location sense_location;
     private Location shoot_location; //shoot location, only for rollercoaster type
+    private String overlay;
 
     private boolean in_use;
 
@@ -47,6 +48,7 @@ public class ShootInfo {
 
         fileConfig.set("range", range);
         fileConfig.set("timer", timer);
+        fileConfig.set("overlay", overlay);
 
         save();
 
@@ -65,6 +67,7 @@ public class ShootInfo {
 
         range = (float) fileConfig.getDouble("range");
         timer = (float) fileConfig.getDouble("timer");
+        overlay = fileConfig.getString("overlay");
     }
 
     //Outer Functions
@@ -93,6 +96,7 @@ public class ShootInfo {
         fileConfig.set("camera_location", camera_location);
         fileConfig.set("sense_location", sense_location);
         fileConfig.set("timer", timer);
+        fileConfig.set("overlay", overlay);
         if (type == "rollercoaster") {
             fileConfig.set("rollercoaster.shoot_location", shoot_location);
         }
@@ -137,6 +141,11 @@ public class ShootInfo {
         this.in_use = in_use;
     }
 
+    public boolean setOverlay(String overlay) {
+        this.overlay = overlay;
+        return save();
+    }
+
     //Getters
 
     public float getRange() {
@@ -164,8 +173,6 @@ public class ShootInfo {
     }
 
     public boolean isRollercoaster() {
-        CameraPlugin.plugin.getLogger().info("Is rollercoaster?: " + (type == "rollercoaster"));
-        CameraPlugin.plugin.getLogger().info("Type: " + type);
         return type.equalsIgnoreCase("rollercoaster");
     }
 
@@ -175,5 +182,9 @@ public class ShootInfo {
 
     public boolean in_use() {
         return in_use;
+    }
+
+    public String getOverlay() {
+        return overlay;
     }
 }

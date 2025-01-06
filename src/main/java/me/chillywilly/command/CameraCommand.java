@@ -1,5 +1,6 @@
 package me.chillywilly.command;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.bukkit.util.StringUtil;
 
 import me.chillywilly.CameraPlugin;
 import me.chillywilly.shoots.ShootInfo;
+import me.chillywilly.util.PluginConst;
 
 public class CameraCommand implements TabExecutor {
     @Override
@@ -137,13 +139,8 @@ public class CameraCommand implements TabExecutor {
         switch (subcommand.toLowerCase()) {
             case "setup":
                 if (args.length >= 4) {
-                    try {
-                        CameraCommandUtils.setupShoot(player, shoot_name, args[2].toLowerCase(), Float.parseFloat(args[3]));
-                        return true;
-                    } catch (NumberFormatException e) {
-                        player.sendMessage("Provided item is not a number: " + args[3]);
-                        return true;
-                    }
+                    CameraCommandUtils.setupShoot(player, shoot_name, args[2].toLowerCase(), args[3]);
+                    return true;
                 }
                 CameraCommandUtils.setupShoot(player, shoot_name, args[2].toLowerCase(), null);
                 return true;
@@ -187,9 +184,9 @@ public class CameraCommand implements TabExecutor {
                     case "setup":
                         ShootInfo shoot = CameraPlugin.plugin.shootManager.getShoot(shoot_identifier);
                         if (shoot != null && shoot.isRollercoaster()) {
-                            StringUtil.copyPartialMatches(args[2], List.of("range", "camera", "timer", "sense", "shootLocation"), ret);
+                            StringUtil.copyPartialMatches(args[2], List.of("range", "camera", "timer", "sense", "shootLocation", "overlay"), ret);
                         }
-                        StringUtil.copyPartialMatches(args[2], List.of("range", "camera", "timer", "sense"), ret);
+                        StringUtil.copyPartialMatches(args[2], List.of("range", "camera", "timer", "sense", "overlay"), ret);
                         break;
                     case "create":
                         StringUtil.copyPartialMatches(args[2], List.of("static", "rollercoaster"), ret);
@@ -204,10 +201,22 @@ public class CameraCommand implements TabExecutor {
                 break;
             case 4:
                 //(/camera (args[0]) (args[1]) (args[2]) (THIS IS THE ARG))
-                if (args[0].equalsIgnoreCase("setup") && args[2].equalsIgnoreCase("timer")) {
-                    return List.of("Timer");
-                } else {
-                    return null;
+                if (args[0].equalsIgnoreCase("setup")) {
+                    switch (args[2].toLowerCase()) {
+                        case "timer":
+                            return List.of("Timer");
+                        case "range":
+                            return List.of("Range");
+                        case "overlay":
+                            File[] files = PluginConst.Storage.overlay_folder.listFiles();
+                            List<String> file_names = new ArrayList<String>();
+                            for (File file : files) {
+                                String name = file.getName().split("\\.")[0];
+                                file_names.add(name);
+                            }
+
+                            StringUtil.copyPartialMatches(args[3], file_names, ret);
+                    }
                 }
         }
 
