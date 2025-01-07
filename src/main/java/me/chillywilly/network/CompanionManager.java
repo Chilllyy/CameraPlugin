@@ -110,6 +110,7 @@ public class CompanionManager implements Listener, PluginMessageListener {
                     player.spigot().sendMessage(text);
                 }
             });
+            busy_map.put(runnable.getCompanion(), false);
         }
     }
 
