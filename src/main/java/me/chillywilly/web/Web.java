@@ -77,12 +77,12 @@ public class Web {
 
             Date date = CameraPlugin.plugin.database.getDateForImage(image_id);
 
-            SimpleDateFormat dateformat = new SimpleDateFormat(
-                "MM-dd-yyyy"
-            );
+            SimpleDateFormat UTC = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+
+            
 
             html = html.replace("{image1}", base64_image).replace("{image2}", base64_overlay);
-            html = html.replace("{player_list}", player_list.toString()).replace("{date}", dateformat.format(date));
+            html = html.replace("{player_list}", player_list.toString()).replace("{date}", UTC.format(date));
             ctx.status(200).html(html);
         });
 

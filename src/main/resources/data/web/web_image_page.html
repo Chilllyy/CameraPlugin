@@ -110,6 +110,12 @@
     </div>
 
     <script>
+        const date = document.getElementById("date-display");
+        var utc = date.innerText;
+        var options = {year:"numeric"};
+        var local_date = new Date(utc);
+        var local_string = "Taken on <b>" + local_date.getFullYear() + "-" + local_date.getMonth() + "-" + local_date.getDate() + "</b>";
+        date.innerHTML = local_string;
         const canvas = document.getElementById('image-canvas');
         const ctx = canvas.getContext('2d');
         var toggle = false;
@@ -139,9 +145,9 @@
 
         document.getElementById('toggle-overlay').addEventListener('click', () => {
             if (toggle) {
+                document.getElementById("date-display").hidden = false;
                 ctx.drawImage(image, 0, 0, image.width, image.height);
                 ctx.drawImage(image2, 0, 0, image.width, image.height);
-                document.getElementById("date-display").hidden = false;
                 toggle = false;
             } else {
                 ctx.drawImage(image, 0, 0, image.width, image.height);

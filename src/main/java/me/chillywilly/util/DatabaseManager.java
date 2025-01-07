@@ -119,10 +119,10 @@ public class DatabaseManager {
 
     public Date getDateForImage(int image_id) {
         try {
-            String command = String.format("SELECT `date` FROM `images` WHERE `uuid` == `%s`", image_id);
+            String command = String.format("SELECT `date` FROM `images` WHERE `id` == %s", image_id);
             return connection.prepareStatement(command).executeQuery().getDate("date");
         } catch (SQLException e) {
-            CameraPlugin.plugin.getLogger().warning("Unable to get daet from web DB: " + image_id);
+            CameraPlugin.plugin.getLogger().warning("Unable to get date from web DB: " + image_id);
             e.printStackTrace();
         }
 
