@@ -10,11 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.GameMode;
+import javax.naming.spi.DirStateFactory.Result;
+
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import me.chillywilly.CameraPlugin;
-import me.chillywilly.shoots.ShootInfo;
 
 public class DatabaseManager {
     private Connection connection;
@@ -35,12 +37,71 @@ public class DatabaseManager {
 
     private void init() {
         String initImagesDB = "CREATE TABLE IF NOT EXISTS `images` (id INTEGER PRIMARY KEY, uuid VARCHAR(255), overlay VARCHAR(255), date DATETIME DEFAULT CURRENT_TIMESTAMP)";
-        String initPlayersDB = "CREATE TABLE IF NOT EXISTS `players` (id INTEGER PRIMARY KEY, image_id int, player_uuid VARCHAR(255), player_name VARCHAR(255));";
+        String initPlayersDB = "CREATE TABLE IF NOT EXISTS `players` (id INTEGER PRIMARY KEY, image_id int, player_uuid VARCHAR(255), player_name VARCHAR(255))";
         send(initImagesDB);
         send(initPlayersDB);
     }
 
     //Outer Functions
+
+    public int insertImage(UUID uuid, String overlay) {
+        try {
+            String command = String.format("INSERT INTO `images` (uuid, overlay) VALUES ('%s', '%s')", uuid.toString(), overlay);
+            PreparedStatement statement = connection.prepareStatement(command, Statement.RETURN_GENERATED_KEYS);
+            statement.executeUpdate();
+            ResultSet keys = statement.getGeneratedKeys();
+            return keys.getInt(1);
+        } catch (SQLException e) {
+            CameraPlugin.plugin.getLogger().warning("Unable to insert image into web DB: " + uuid.toString() + ", " + overlay);
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+
+    public void insertPlayer(int image_id, Player player) {
+        try {
+            String command = String.format("INSERT INTO `players` (image_id, player_uuid, player_name) VALUES (%s, '%s', '%s')", image_id, player.getUniqueId().toString(), player.getName());
+            connection.prepareStatement(command).executeUpdate();
+        } catch (SQLException e) {
+            CameraPlugin.plugin.getLogger().warning("Unable to insert player into images: " + image_id + ", " + player.getName());
+            e.printStackTrace();
+        }
+    }
+
+    public int getImageId(String uuid) {
+        try {
+            String command = String.format("SELECT `id` FROM `images` WHERE `uuid` == '%s'", uuid);
+            ResultSet result = connection.prepareStatement(command).executeQuery();
+            return result.getInt(1);
+        } catch (SQLException e) {
+            CameraPlugin.plugin.getLogger().warning("Unable to get Image ID from UUID: " + uuid);
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+
+    public List<OfflinePlayer> getPlayersFromImage(int image_id) {
+        List<OfflinePlayer> players = new ArrayList<>();
+        try {
+            String command = String.format("SELECT `player_uuid` FROM `players` WHERE `image_id` == %s", image_id);
+            ResultSet result = connection.prepareStatement(command).executeQuery();
+
+            while (result.next()) {
+                String uuid = result.getString("player_uuid");
+                OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
+                players.add(player);
+            }
+
+            return players;
+        } catch (SQLException e) {
+            CameraPlugin.plugin.getLogger().warning("Unable to grab players from web DB: " + image_id);
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
 
     //Inner Functions

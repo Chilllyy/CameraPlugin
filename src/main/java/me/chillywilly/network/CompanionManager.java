@@ -101,6 +101,10 @@ public class CompanionManager implements Listener, PluginMessageListener {
 
     public void authUploadedFile(Integer auth, UUID uuid) {
         ShootRunnable runnable = running_shoots.get(auth);
+        int image_id = CameraPlugin.plugin.database.insertImage(uuid, runnable.getInfo().getOverlay());
+        runnable.getPlayers().forEach((player) -> {
+            CameraPlugin.plugin.database.insertPlayer(image_id, player);
+        });
         String url = CameraPlugin.plugin.getConfig().getString("web.url") + "/image/" + uuid.toString();
         if (runnable != null) {
             runnable.getPlayers().forEach((player) -> {

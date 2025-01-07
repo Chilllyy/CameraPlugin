@@ -26,17 +26,16 @@ public class ShootRunnable implements Runnable {
         companion = CameraPlugin.plugin.companionManager.getNextAvailableCompanion();
         info.setInUse(true);
 
-        Bukkit.getOnlinePlayers().forEach((player) -> {
-            if (player.getLocation().distance(info.getSenseLocation()) <= 15) {
-                if (!player.getUniqueId().equals(companion.getUniqueId())) {
-                    player_list.add(player);
-                }
-            }
-        });
-
         if (companion != null) {
             old_camera_location = companion.getLocation();
             companion.teleport(info.getCameraLocation());
+            Bukkit.getOnlinePlayers().forEach((player) -> {
+                if (player.getLocation().distance(info.getSenseLocation()) <= 15) {
+                    if (!player.getUniqueId().equals(companion.getUniqueId())) {
+                        player_list.add(player);
+                    }
+                }
+            });
         } else {
             player_list.forEach((player) -> {
                 if (player.isOnline()) {

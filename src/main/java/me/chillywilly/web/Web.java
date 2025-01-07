@@ -44,14 +44,9 @@ public class Web {
 
             String base64_image = "";
             String base64_overlay = "";
-            int width = 0;
-            int height = 0;
             try {
                 FileInputStream fileInputStreamReader = new FileInputStream(image);
                 byte[] bytes = new byte[(int)image.length()];
-                BufferedImage image_read = ImageIO.read(image);
-                width = image_read.getWidth();
-                height = image_read.getHeight();
                 fileInputStreamReader.read(bytes);
                 base64_image = new String(Base64.getEncoder().encode(bytes), "UTF-8");
 
@@ -68,11 +63,18 @@ public class Web {
                 e.printStackTrace();
             }
 
-            String canvas = "<canvas id='image' width='" + width + "' height='" + height + "'></canvas>";
+            StringBuilder player_list = new StringBuilder();
+            int image_id = CameraPlugin.plugin.database.getImageId(UUID);
+            CameraPlugin.plugin.database.getPlayersFromImage(image_id).forEach((player) -> {
+                UUID id = player.getUniqueId();
+                String name = player.getName();
+                String list_item = String.format("{name: '%s', head: 'https://mc-heads.net/avatar/%s'}", name, id.toString());
+                player_list.append(list_item);
+            });
 
-            String script = getScript().replace("{image1}", base64_image).replace("{image2}", base64_overlay);
 
-            html = html.replace("{image}", canvas).replace("{script}", script);
+            html = html.replace("{image1}", base64_image).replace("{image2}", base64_overlay);
+            html = html.replace("{player_list}", player_list.toString());
             ctx.status(200).html(html);
         });
 
@@ -127,23 +129,6 @@ public class Web {
             CameraPlugin.plugin.getLogger().warning("Unable to read HTML file for webpage!");
             e.printStackTrace();
         }
-        return builder.toString();
-    }
-
-    private String getScript() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("const canvas = document.getElementById('image'); const ctx = canvas.getContext('2d');");
-        builder.append("const image1 = new Image(); const image2 = new Image();");
-        builder.append("image1.src = 'data:image/png;base64, {image1}'; image2.src = 'data:image/png;base64, {image2}';");
-        builder.append("image1.onload = () => {");
-        builder.append("ctx.drawImage(image1, 0, 0);");
-        builder.append("image2.onload = () => {");
-        builder.append("ctx.drawImage(image2, 0, 0, image1.width, image1.height);");
-        builder.append("const downloadLink = document.createElement('a'); downloadLink.download = 'image.png';");
-        builder.append("downloadLink.href = canvas.toDataURL('image/png');");
-        builder.append("}}");
-
-
         return builder.toString();
     }
 }
