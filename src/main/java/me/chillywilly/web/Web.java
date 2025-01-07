@@ -1,17 +1,16 @@
 package me.chillywilly.web;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
-
-import javax.imageio.ImageIO;
 
 import io.javalin.Javalin;
 import io.javalin.http.UploadedFile;
@@ -40,7 +39,9 @@ public class Web {
             String UUID = ctx.pathParam("uuid");
             File image = new File(PluginConst.Storage.images_folder, UUID + ".png");
 
-            File overlay = new File(PluginConst.Storage.overlay_folder, "test.png");
+            String overlay_name = CameraPlugin.plugin.database.getImageOverlay(UUID);
+
+            File overlay = new File(PluginConst.Storage.overlay_folder, overlay_name + ".png");
 
             String base64_image = "";
             String base64_overlay = "";
@@ -51,10 +52,12 @@ public class Web {
                 base64_image = new String(Base64.getEncoder().encode(bytes), "UTF-8");
 
 
-                FileInputStream overlayStreamReader = new FileInputStream(overlay);
-                byte[] overlay_bytes = new byte[(int)overlay.length()];
-                overlayStreamReader.read(overlay_bytes);
-                base64_overlay = new String(Base64.getEncoder().encode(overlay_bytes), "UTF-8");
+                if (!overlay_name.equalsIgnoreCase("null")) {
+                    FileInputStream overlayStreamReader = new FileInputStream(overlay);
+                    byte[] overlay_bytes = new byte[(int)overlay.length()];
+                    overlayStreamReader.read(overlay_bytes);
+                    base64_overlay = new String(Base64.getEncoder().encode(overlay_bytes), "UTF-8");
+                }
             } catch (FileNotFoundException e) {
                 CameraPlugin.plugin.getLogger().warning("Somebody tried to access an image that doesn't exist: " + UUID);
                 e.printStackTrace();
@@ -68,13 +71,18 @@ public class Web {
             CameraPlugin.plugin.database.getPlayersFromImage(image_id).forEach((player) -> {
                 UUID id = player.getUniqueId();
                 String name = player.getName();
-                String list_item = String.format("{name: '%s', head: 'https://mc-heads.net/avatar/%s'}", name, id.toString());
+                String list_item = String.format("{name: '%s', head: 'https://mc-heads.net/avatar/%s'},", name, id.toString());
                 player_list.append(list_item);
             });
 
+            Date date = CameraPlugin.plugin.database.getDateForImage(image_id);
+
+            SimpleDateFormat dateformat = new SimpleDateFormat(
+                "MM-dd-yyyy"
+            );
 
             html = html.replace("{image1}", base64_image).replace("{image2}", base64_overlay);
-            html = html.replace("{player_list}", player_list.toString());
+            html = html.replace("{player_list}", player_list.toString()).replace("{date}", dateformat.format(date));
             ctx.status(200).html(html);
         });
 

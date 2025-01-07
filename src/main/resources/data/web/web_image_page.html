@@ -98,7 +98,7 @@
 </head>
 <body>
     <div id="canvas-container">
-        <div id="date-display">01/06/2025</div>
+        <div id="date-display">{date}</div>
         <canvas id="image-canvas"></canvas>
         <div id="buttons">
             <button id="toggle-overlay">Toggle Overlay</button>
@@ -141,9 +141,11 @@
             if (toggle) {
                 ctx.drawImage(image, 0, 0, image.width, image.height);
                 ctx.drawImage(image2, 0, 0, image.width, image.height);
+                document.getElementById("date-display").hidden = false;
                 toggle = false;
             } else {
                 ctx.drawImage(image, 0, 0, image.width, image.height);
+                document.getElementById("date-display").hidden = true;
                 toggle = true;
             }
         });

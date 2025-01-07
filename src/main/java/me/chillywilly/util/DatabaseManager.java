@@ -1,6 +1,7 @@
 package me.chillywilly.util;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -82,6 +83,19 @@ public class DatabaseManager {
         return -1;
     }
 
+    public String getImageOverlay(String uuid) {
+        try {
+            String command = String.format("Select `overlay` from `images` WHERE `uuid` == '%s'", uuid);
+            ResultSet result = connection.prepareStatement(command).executeQuery();
+            return result.getString("overlay");
+        } catch (SQLException e) {
+            CameraPlugin.plugin.getLogger().warning("Unable to get image overlay from UUID: " + uuid);
+            e.printStackTrace();
+        }
+
+        return "null";
+    }
+
     public List<OfflinePlayer> getPlayersFromImage(int image_id) {
         List<OfflinePlayer> players = new ArrayList<>();
         try {
@@ -97,6 +111,18 @@ public class DatabaseManager {
             return players;
         } catch (SQLException e) {
             CameraPlugin.plugin.getLogger().warning("Unable to grab players from web DB: " + image_id);
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public Date getDateForImage(int image_id) {
+        try {
+            String command = String.format("SELECT `date` FROM `images` WHERE `uuid` == `%s`", image_id);
+            return connection.prepareStatement(command).executeQuery().getDate("date");
+        } catch (SQLException e) {
+            CameraPlugin.plugin.getLogger().warning("Unable to get daet from web DB: " + image_id);
             e.printStackTrace();
         }
 
