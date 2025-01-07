@@ -28,6 +28,13 @@ public class PluginConst {
             shoots_folder.mkdirs();
             web_folder.mkdirs();
             overlay_folder.mkdirs();
+            initWebFolder();
+        }
+
+        public static void initWebFolder() {
+            if (!new File(web_folder, "web_image_page.html").exists()) {
+                CameraPlugin.plugin.saveResource("data/web/web_image_page.html", false);
+            }
         }
     }
 }

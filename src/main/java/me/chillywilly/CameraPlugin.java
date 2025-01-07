@@ -10,6 +10,7 @@ import me.chillywilly.network.CompanionManager;
 import me.chillywilly.shoots.ShootInfo;
 import me.chillywilly.shoots.ShootManager;
 import me.chillywilly.shoots.ShootRunnable;
+import me.chillywilly.util.DatabaseManager;
 import me.chillywilly.util.PluginConst;
 import me.chillywilly.web.Web;
 
@@ -18,6 +19,7 @@ public class CameraPlugin extends JavaPlugin {
     public static CameraPlugin plugin;
     public ShootManager shootManager;
     public CompanionManager companionManager;
+    public DatabaseManager database;
     private Web web;
 
     @Override
@@ -55,6 +57,9 @@ public class CameraPlugin extends JavaPlugin {
                 }
             });
         }, 0, 40);
+
+        database = new DatabaseManager();
+        database.sqlite();
 
         web = new Web(getConfig().getInt("web.port"));
     }

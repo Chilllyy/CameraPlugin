@@ -28,7 +28,9 @@ public class ShootRunnable implements Runnable {
 
         Bukkit.getOnlinePlayers().forEach((player) -> {
             if (player.getLocation().distance(info.getSenseLocation()) <= 15) {
-                player_list.add(player);
+                if (!player.getUniqueId().equals(companion.getUniqueId())) {
+                    player_list.add(player);
+                }
             }
         });
 
@@ -98,5 +100,13 @@ public class ShootRunnable implements Runnable {
 
     public void delete() {
         player_list.clear();
+    }
+
+    public Player getCompanion() {
+        return companion;
+    }
+
+    public ShootInfo getInfo() {
+        return info;
     }
 }
