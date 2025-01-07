@@ -31,7 +31,7 @@ public class ShootInfo {
         name = file.getName().split("\\.")[0];
         this.type = type;
         camera_location = location;
-        sense_location = location;
+        sense_location = new Location(location.getWorld(), 0, 0, 0);
         if (type == "rollercoaster") {
             shoot_location = location;
         }
