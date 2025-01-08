@@ -61,8 +61,6 @@ public class CameraPlugin extends JavaPlugin {
                     shoots.forEach((shoot) -> {
                         if (!shoot.in_use() && player.getLocation().distance(shoot.getSenseLocation()) <= shoot.getRange()) {
                             new ShootRunnable(shoot);
-                        } else if (shoot.in_use() && player.getLocation().distance(shoot.getSenseLocation()) <= shoot.getRange()) {
-                            messages.sendMessage(player, "render.in-use");
                         }
                     });
                 }

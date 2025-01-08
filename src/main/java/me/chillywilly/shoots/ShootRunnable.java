@@ -74,12 +74,17 @@ public class ShootRunnable implements Runnable {
             return;
         }
 
-        player_list.forEach((player) -> {
-            if (player.isOnline()) {
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacy("Taking Photo in: " + (int) this.countdown_clock));
-                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
-            } else {
-                player_list.remove(player);
+        Bukkit.getOnlinePlayers().forEach((player) -> {
+            if (player.getLocation().distance(info.getSenseLocation()) <= 15) {
+                if (player.isOnline()) {
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacy("Taking Photo in: " + (int) this.countdown_clock));
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
+                    if (!player_list.contains(player)) {
+                        player_list.add(player);
+                    }
+                } else {
+                    player_list.remove(player);
+                }
             }
         });
         

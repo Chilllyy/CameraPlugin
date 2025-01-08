@@ -120,6 +120,10 @@ public class CompanionManager implements Listener, PluginMessageListener {
         return running_shoots.get(auth);
     }
 
+    public HashMap<Integer, ShootRunnable> getRunningShoots() {
+        return running_shoots;
+    }
+
     public boolean hasAuthKey(Integer auth) {
         return running_shoots.containsKey(auth);
     }

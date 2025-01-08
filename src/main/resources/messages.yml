@@ -39,6 +39,5 @@ command:
     fail: "{prefix} Unable to rename file, there may already be a shoot by the new name"
     doesnt-exist: "{prefix} Invalid shoot provided, try again"
 render:
-  in-use: "{prefix} This shoot is in use, wait a minute and try again"
   no-camera-found: "{prefix} No Camera Found, please contact an admin if this is a recurring issue"
   completed: "{prefix} Image Successfully Captured: {url}"
