@@ -1,114 +1,103 @@
 package me.chillywilly;
 
-import java.io.File;
+import java.util.Collection;
 
-import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.chillywilly.commands.CameraCommand;
-import me.chillywilly.events.PlayerJoinCheckCompanion;
-import me.chillywilly.shoots.ShootsManager;
-import me.chillywilly.util.BuiltinMessages;
-import me.chillywilly.util.NetManager;
-import me.chillywilly.web.WebApp;
-import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.text.Component;
+import me.chillywilly.command.CameraCommand;
+import me.chillywilly.network.CompanionManager;
+import me.chillywilly.shoots.ShootInfo;
+import me.chillywilly.shoots.ShootManager;
+import me.chillywilly.shoots.ShootRunnable;
+import me.chillywilly.util.DatabaseManager;
+import me.chillywilly.util.Messages;
+import me.chillywilly.util.PluginConst;
+import me.chillywilly.web.Web;
 
 public class CameraPlugin extends JavaPlugin {
-    public static String data_path;
-    public static String shoots_path;
-    public static String web_root;
-    public static String upload_path;
 
-    private BuiltinMessages messages;
-    private ShootsManager shoots;
+    public static CameraPlugin plugin;
+    public ShootManager shootManager;
+    public CompanionManager companionManager;
+    public DatabaseManager database;
+    public Messages messages;
+    private Web web;
 
-    private NetManager netManager;
-    private WebApp web;
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        data_path = getDataFolder().getAbsolutePath() + File.separator + "data" + File.separator;
-        shoots_path = data_path + "shoots" + File.separator;
-        upload_path = data_path + "uploads" + File.separator;
-        web_root = getDataFolder().getAbsolutePath() + File.separator + "web" + File.separator;
 
-        if (new File(data_path).mkdirs()) {
-            getLogger().info("Successfully created data folder");
-        }
-        if (new File(shoots_path).mkdirs()) {
-            getLogger().info("Successfully created shoots folder");
-        }
-        if (new File(upload_path).mkdirs()) {
-            getLogger().info("Successfully created upload path folder");
-        }
-        if (new File(web_root).mkdirs()) {
-            getLogger().info("Successfully created webroot path");
-        }
+        CameraCommand command = new CameraCommand();
 
-        int web_port = getConfig().getInt("web.port");
+        getCommand("camera").setExecutor(command);
+        getCommand("camera").setTabCompleter(command);
 
-        web = new WebApp(this, web_port); //Starts webapp at port from config
-        
-        messages = new BuiltinMessages(this);
+        CameraPlugin.plugin = this;
 
-        shoots = new ShootsManager(this);
+        PluginConst.Storage.init(); //Init all storage folders and constant variables (For accessing files)
+        shootManager = new ShootManager(); //Init Shoot Manager
 
-        getCommand("camera").setExecutor(new CameraCommand(this));
+        companionManager = new CompanionManager();
+        getServer().getPluginManager().registerEvents(new CompanionManager(), this);
 
-        netManager = new NetManager(this);
+        messages = new Messages();
 
-        getServer().getPluginManager().registerEvents(new PlayerJoinCheckCompanion(this), this);
+        database = new DatabaseManager();
+        database.sqlite();
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            web = new Web(getConfig().getInt("web.port"));
+        });
+
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
+            /*
+             * This runs every 5 seconds or so, it checks all of the shoot locations and sees if a player is nearby
+             */
+
+            Collection<ShootInfo> shoots = shootManager.getShoots();
+            Bukkit.getOnlinePlayers().forEach((player) -> {
+                if (!companionManager.isCompanion(player)) {
+                    shoots.forEach((shoot) -> {
+                        if (!shoot.in_use() && player.getLocation().distance(shoot.getSenseLocation()) <= shoot.getRange()) {
+                            new ShootRunnable(shoot);
+                        }
+                    });
+                }
+            });
+        }, 0, 100);
     }
 
-    @Override
-    public void onDisable() {
-        if (netManager != null) netManager.disable();
-        if (messages != null) messages.clearCache();
-        if (shoots != null) shoots.clearCache();
-        if (web != null) web.stop();
-        getServer().getScheduler().cancelTasks(this);
-        getLogger().info("Successfully Disabled Plugin");
+    public void reload(int reload) {
+        /*
+         * 0: Reload All
+         * 1: Reload Core
+         * 2: Reload Web
+         */
+        switch (reload) {
+            case 0:
+                shootManager.reload();
+                companionManager.reload();
+                reloadConfig();
+                reloadWeb();
+                messages.reload();
+                break;
+            case 1:
+                shootManager.reload();
+                companionManager.reload();
+                reloadConfig();
+                messages.reload();
+                break;
+            case 2:
+                reloadWeb();
+                break;
+        }
     }
 
-    public void reloadCore() {
-        shoots.clearCache();
-    }
-
-    public void reloadWeb() {
+    private void reloadWeb() {
         web.stop();
-        web.start();
-    }
-
-    public void reloadMessages() {
-        messages.clearCache();
-    }
-
-    public void reloadAll() {
-        reloadCore();
-        reloadWeb();
-        reloadMessages();
-    }
-
-    public void sendMessage(Player player, String key) {
-        Component message = messages.getMessage(key);
-        Audience aud = (Audience) player;
-
-        aud.sendMessage(message);
-    }
-
-    public void sendURLMessage(Player player, String URL) {
-        Component message = messages.getMessageReplace("command.render.render-complete", "{URL}", URL);
-        Audience aud = (Audience) player;
-        getLogger().info("Sent Msg");
-        aud.sendMessage(message);
-    }
-
-    public ShootsManager getShoots() {
-        return shoots;
-    }
-
-    public NetManager getNetManager() {
-        return netManager;
+        Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
+            web = new Web(getConfig().getInt("web.port"));
+        }, 100);
     }
 }

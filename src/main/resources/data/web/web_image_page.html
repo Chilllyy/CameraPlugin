@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            background-image: linear-gradient(to top, rgba(255, 165, 0, 0.5), rgba(255, 255, 255, 0.1));
+        }
+
+        #canvas-container {
+            width: 70%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #date-display {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: rgba(0, 0, 0, 0.7);
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+        }
+
+        #buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #player-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 50px;
+            width: 60%;
+        }
+
+        .player-head {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            object-fit: cover;
+        }
+
+        .player-head img {
+            width: 60px;
+            height: 60px;
+            border-radius: 5px;
+            background-color: #ccc;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .player-head span {
+            margin-top: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container">
+        <div id="date-display">{date}</div>
+        <canvas id="image-canvas"></canvas>
+        <div id="buttons">
+            <button id="toggle-overlay">Toggle Overlay</button>
+            <button id="download-image">Download Image</button>
+        </div>
+    </div>
+    <div id="player-grid">
+        <!-- Player heads will go here -->
+    </div>
+
+    <script>
+        const date = document.getElementById("date-display");
+        var utc = date.innerText;
+        var options = {year:"numeric"};
+        var local_date = new Date(utc);
+        var local_string = "Taken on <b>" + local_date.getFullYear() + "-" + local_date.getMonth() + "-" + local_date.getDate() + "</b>";
+        date.innerHTML = local_string;
+        const canvas = document.getElementById('image-canvas');
+        const ctx = canvas.getContext('2d');
+        var toggle = false;
+
+        const image = new Image();
+        const image2 = new Image();
+        image.src = 'data:image/png;base64, {image1}'; 
+        image2.src = 'data:image/png;base64, {image2}';
+        image.onload = () => {
+            canvas.width = image.width;
+            canvas.height = image.height;
+            ctx.drawImage(image, 0, 0, image.width, image.height);
+
+            const container = canvas.parentElement;
+            const scaleFactor = Math.min(
+                container.offsetWidth / image.width,
+                container.offsetHeight / image.height
+            );
+
+            canvas.style.width = `${image.width * scaleFactor}px`;
+            canvas.style.height = `${image.height * scaleFactor}px`;
+            
+            image2.onload = () => {
+                ctx.drawImage(image2, 0, 0, image.width, image.height);
+            }
+        };
+
+        document.getElementById('toggle-overlay').addEventListener('click', () => {
+            if (toggle) {
+                document.getElementById("date-display").hidden = false;
+                ctx.drawImage(image, 0, 0, image.width, image.height);
+                ctx.drawImage(image2, 0, 0, image.width, image.height);
+                toggle = false;
+            } else {
+                ctx.drawImage(image, 0, 0, image.width, image.height);
+                document.getElementById("date-display").hidden = true;
+                toggle = true;
+            }
+        });
+
+        document.getElementById('download-image').addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = 'downloaded-image.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+
+        const playerGrid = document.getElementById('player-grid');
+        const players = [
+             {player_list}
+        ];
+
+        players.forEach(player => {
+            const div = document.createElement('div');
+            div.className = 'player-head';
+
+            const img = document.createElement('img');
+            img.src = player.head;
+            img.alt = `${player.name}'s head`;
+
+            const name = document.createElement('span');
+            name.textContent = player.name;
+
+            div.appendChild(img);
+            div.appendChild(name);
+            playerGrid.appendChild(div);
+        });
+    </script>
+</body>
+</html>
