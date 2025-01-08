@@ -27,6 +27,7 @@ public class Web {
 
     public Web(int port) {
         this.port = port;
+        existing_uuids = CameraPlugin.plugin.database.getExistingUUIDs();
         JavalinLogger.startupInfo = false;
         this.app = Javalin.create(config -> {
             config.showJavalinBanner = false;
@@ -105,6 +106,10 @@ public class Web {
 
             UploadedFile file = ctx.uploadedFile("files");
             UUID uuid = UUID.randomUUID();
+
+            while (!existing_uuids.contains(uuid.toString())) {
+                uuid = UUID.randomUUID();
+            }
 
             FileUtil.streamToFile(file.content(), PluginConst.Storage.images_folder + File.separator + uuid.toString() + ".png");
 
