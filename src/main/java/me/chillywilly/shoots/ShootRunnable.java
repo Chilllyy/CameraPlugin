@@ -19,10 +19,10 @@ public class ShootRunnable implements Runnable {
     private Player companion;
     private Location old_camera_location;
     private List<Player> player_list;
-    public ShootRunnable (ShootInfo info) {
+    public ShootRunnable (ShootInfo info, float timer) {
         this.info = info;
         player_list = new ArrayList<Player>();
-        countdown_clock = info.getTimer();
+        countdown_clock = timer;
         companion = CameraPlugin.plugin.companionManager.getNextAvailableCompanion();
 
         if (companion != null) {

@@ -66,7 +66,7 @@ public class CameraPlugin extends JavaPlugin {
                         if (sense != null) {
                             if (player.getLocation().getWorld().equals(sense.getWorld())) {
                                 if (!shoot.in_use() && player.getLocation().distance(sense) <= shoot.getRange()) {
-                                    new ShootRunnable(shoot);
+                                    new ShootRunnable(shoot, shoot.getTimer());
                                 }
                             }
                         }
