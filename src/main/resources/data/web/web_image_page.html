@@ -114,7 +114,7 @@
         var utc = date.innerText;
         var options = {year:"numeric"};
         var local_date = new Date(utc);
-        var local_string = "Taken on <b>" + local_date.getFullYear() + "-" + local_date.getMonth() + "-" + local_date.getDate() + "</b>";
+        var local_string = "Taken on <b>" + local_date.getFullYear() + "-" + local_date.getMonth() + 1 + "-" + local_date.getDate() + "</b>";
         date.innerHTML = local_string;
         const canvas = document.getElementById('image-canvas');
         const ctx = canvas.getContext('2d');
