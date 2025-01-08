@@ -30,8 +30,8 @@ public class ShootRunnable implements Runnable {
             old_camera_location = companion.getLocation();
             companion.teleport(info.getCameraLocation());
             Bukkit.getOnlinePlayers().forEach((player) -> {
-                if (player.getLocation().getWorld().equals(info.getSenseLocation().getWorld())) {
-                    if (player.getLocation().distance(info.getSenseLocation()) <= 15) {
+                if (player.getLocation().getWorld().equals(companion.getLocation().getWorld())) {
+                    if (player.getLocation().distance(companion.getLocation()) <= 15) {
                         if (!player.getUniqueId().equals(companion.getUniqueId())) {
                             player_list.add(player);
                         }
@@ -40,8 +40,8 @@ public class ShootRunnable implements Runnable {
             });
         } else {
             Bukkit.getOnlinePlayers().forEach((player) -> {
-                if (player.getLocation().getWorld().equals(info.getSenseLocation().getWorld())) {
-                    if (player.getLocation().distance(info.getSenseLocation()) <= 15) {
+                if (player.getLocation().getWorld().equals(companion.getLocation().getWorld())) {
+                    if (player.getLocation().distance(companion.getLocation()) <= 15) {
                         CameraPlugin.plugin.messages.sendMessage(player, "render.no-camera-found");
                         info.setInUse(false);
                     }
@@ -79,8 +79,8 @@ public class ShootRunnable implements Runnable {
         }
 
         Bukkit.getOnlinePlayers().forEach((player) -> {
-            if (player.getLocation().getWorld().equals(info.getSenseLocation().getWorld())) {
-                if (player.getLocation().distance(info.getSenseLocation()) <= 15) {
+            if (player.getLocation().getWorld().equals(companion.getLocation().getWorld())) {
+                if (player.getLocation().distance(companion.getLocation()) <= 15) {
                     if (player.isOnline()) {
                         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacy("Taking Photo in: " + (int) this.countdown_clock));
                         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
