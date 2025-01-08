@@ -51,6 +51,7 @@ public class Web {
                 byte[] bytes = new byte[(int)image.length()];
                 fileInputStreamReader.read(bytes);
                 base64_image = new String(Base64.getEncoder().encode(bytes), "UTF-8");
+                fileInputStreamReader.close();
 
 
                 if (!overlay_name.equalsIgnoreCase("null")) {
@@ -58,6 +59,7 @@ public class Web {
                     byte[] overlay_bytes = new byte[(int)overlay.length()];
                     overlayStreamReader.read(overlay_bytes);
                     base64_overlay = new String(Base64.getEncoder().encode(overlay_bytes), "UTF-8");
+                    overlayStreamReader.close();
                 }
             } catch (FileNotFoundException e) {
                 CameraPlugin.plugin.getLogger().warning("Somebody tried to access an image that doesn't exist: " + UUID);
