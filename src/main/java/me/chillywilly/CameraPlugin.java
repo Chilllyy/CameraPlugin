@@ -11,6 +11,7 @@ import me.chillywilly.shoots.ShootInfo;
 import me.chillywilly.shoots.ShootManager;
 import me.chillywilly.shoots.ShootRunnable;
 import me.chillywilly.util.DatabaseManager;
+import me.chillywilly.util.Messages;
 import me.chillywilly.util.PluginConst;
 import me.chillywilly.web.Web;
 
@@ -20,6 +21,7 @@ public class CameraPlugin extends JavaPlugin {
     public ShootManager shootManager;
     public CompanionManager companionManager;
     public DatabaseManager database;
+    public Messages messages;
     private Web web;
 
     @Override
@@ -39,9 +41,18 @@ public class CameraPlugin extends JavaPlugin {
         companionManager = new CompanionManager();
         getServer().getPluginManager().registerEvents(new CompanionManager(), this);
 
+        messages = new Messages();
+
+        database = new DatabaseManager();
+        database.sqlite();
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            web = new Web(getConfig().getInt("web.port"));
+        });
+
         Bukkit.getScheduler().runTaskTimer(this, () -> {
             /*
-             * This runs every 2 seconds or so, it checks all of the shoot locations and sees if a player is nearby
+             * This runs every 5 seconds or so, it checks all of the shoot locations and sees if a player is nearby
              */
 
             Collection<ShootInfo> shoots = shootManager.getShoots();
@@ -49,19 +60,15 @@ public class CameraPlugin extends JavaPlugin {
                 if (!companionManager.isCompanion(player)) {
                     shoots.forEach((shoot) -> {
                         if (!shoot.in_use() && player.getLocation().distance(shoot.getSenseLocation()) <= shoot.getRange()) {
-                            player.sendMessage("Start Shoot Countdown!");
-
                             new ShootRunnable(shoot);
+                        }
+                        if (shoot.in_use()) {
+                            messages.sendMessage(player, "render.in-use");
                         }
                     });
                 }
             });
-        }, 0, 40);
-
-        database = new DatabaseManager();
-        database.sqlite();
-
-        web = new Web(getConfig().getInt("web.port"));
+        }, 0, 100);
     }
 
     public void reload(int reload) {
@@ -90,8 +97,8 @@ public class CameraPlugin extends JavaPlugin {
 
     private void reloadWeb() {
         web.stop();
-        Bukkit.getScheduler().runTaskLater(this, () -> {
-            web = new Web(plugin.getConfig().getInt("web.port"));
+        Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
+            web = new Web(getConfig().getInt("web.port"));
         }, 100);
     }
 }
