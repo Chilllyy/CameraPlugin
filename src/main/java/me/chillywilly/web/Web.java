@@ -62,8 +62,7 @@ public class Web {
                     overlayStreamReader.close();
                 }
             } catch (FileNotFoundException e) {
-                CameraPlugin.plugin.getLogger().warning("Somebody tried to access an image that doesn't exist: " + UUID);
-                e.printStackTrace();
+                return;
             } catch (IOException e) {
                 CameraPlugin.plugin.getLogger().warning("Unable to read image from disk: " + UUID);
                 e.printStackTrace();
