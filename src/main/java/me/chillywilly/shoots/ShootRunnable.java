@@ -79,7 +79,7 @@ public class ShootRunnable implements Runnable {
                 if (player.isOnline()) {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacy("Taking Photo in: " + (int) this.countdown_clock));
                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
-                    if (!player_list.contains(player)) {
+                    if (!player_list.contains(player) && !player.getUniqueId().equals(companion.getUniqueId())) {
                         player_list.add(player);
                     }
                 } else {
