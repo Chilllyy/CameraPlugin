@@ -108,7 +108,7 @@ public class Web {
             UploadedFile file = ctx.uploadedFile("files");
             UUID uuid = UUID.randomUUID();
 
-            while (!existing_uuids.contains(uuid.toString())) {
+            while (existing_uuids.contains(uuid.toString())) {
                 uuid = UUID.randomUUID();
             }
 
