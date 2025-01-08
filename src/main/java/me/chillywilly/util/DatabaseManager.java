@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.naming.spi.DirStateFactory.Result;
-
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -50,6 +48,23 @@ public class DatabaseManager {
     }
 
     //Outer Functions
+
+    public List<String> getExistingUUIDs() {
+        List<String> uuids = new ArrayList<>();
+        try {
+            String command = "SELECT `uuid` FROM `images`";
+            ResultSet result = connection.prepareStatement(command).executeQuery();
+            
+            while (result.next()) {
+                uuids.add(result.getString("uuid"));
+            }
+        } catch (SQLException e) {
+            CameraPlugin.plugin.getLogger().warning("Unable to grab UUIDs from web DB");
+            e.printStackTrace();
+        }
+
+        return uuids;
+    }
 
     public int insertImage(UUID uuid, String overlay) {
         try {

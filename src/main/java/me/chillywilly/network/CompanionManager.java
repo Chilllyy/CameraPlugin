@@ -20,8 +20,6 @@ import me.chillywilly.CameraPlugin;
 import me.chillywilly.shoots.ShootInfo;
 import me.chillywilly.shoots.ShootRunnable;
 import me.chillywilly.util.PluginConst;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 
 public class CompanionManager implements Listener, PluginMessageListener {
 
