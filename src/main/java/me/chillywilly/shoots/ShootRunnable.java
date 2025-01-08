@@ -39,7 +39,7 @@ public class ShootRunnable implements Runnable {
         } else {
             player_list.forEach((player) -> {
                 if (player.isOnline()) {
-                    player.sendMessage("No Camera Found!");
+                    CameraPlugin.plugin.messages.sendMessage(player, "render.no-camera-found");
                     info.setInUse(false);
                 } else {
                     player_list.remove(player);

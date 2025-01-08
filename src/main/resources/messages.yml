@@ -1,0 +1,44 @@
+plugin:
+  prefix: "<#ffa600>[Camera]"
+
+command:
+  setup:
+    does-not-exist: "{prefix} Photo does not exist"
+    camera:
+      success: "{prefix} Successfully set Camera Location"
+      fail: "{prefix} Unable to set Camera Location"
+    sense:
+      success: "{prefix} Successfully set Sense Location"
+      fail: "{prefix} Unable to set Sense Location"
+    shoot_location:
+      success: "{prefix} Successfully set Shoot Location"
+      fail: "{prefix} Unable to set Shoot Location"
+      not-rollercoaster: "{prefix} Shoot is not a rollercoaster!"
+    range:
+      success: "{prefix} Successfully set range"
+      fail: "{prefix} Unable to set range"
+      unknown-number: "{prefix} Unknown number provided"
+      none-provided: "{prefix} No number provided"
+    timer:
+      success: "{prefix} Successfully set timer"
+      fail: "{prefix} Unable to set timer"
+      unknown-number: "{prefix} Unknown number provided"
+      none-provided: "{prefix} No number provided"
+    overlay:
+      success: "{prefix} Successfully set overlay"
+      fail: "{prefix} Unable to set overlay"
+      none-found: "{prefix} No overlay found by that name"
+  create:
+    success: "{prefix} Successfully created shoot"
+    fail: "{prefix} Could not create shoot, it may already exist"
+  delete:
+    success: "{prefix} Successfully deleted shoot"
+    fail: "{prefix} Could not delete shoot"
+  rename:
+    success: "{prefix} Successfully renamed file"
+    fail: "{prefix} Unable to rename file, there may already be a shoot by the new name"
+    doesnt-exist: "{prefix} Invalid shoot provided, try again"
+render:
+  in-use: "{prefix} This shoot is in use, wait a minute and try again"
+  no-camera-found: "{prefix} No Camera Found, please contact an admin if this is a recurring issue"
+  completed: "{prefix} Image Successfully Captured: {url}"

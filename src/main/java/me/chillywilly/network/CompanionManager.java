@@ -109,9 +109,7 @@ public class CompanionManager implements Listener, PluginMessageListener {
         if (runnable != null) {
             runnable.getPlayers().forEach((player) -> {
                 if (player.isOnline()) {
-                    TextComponent text = new TextComponent("Image successfully uploaded: " + url);
-                    text.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
-                    player.spigot().sendMessage(text);
+                    CameraPlugin.plugin.messages.sendURLMessage(player, url);
                 }
             });
             busy_map.put(runnable.getCompanion(), false);
