@@ -1,5 +1,5 @@
 plugin:
-  prefix: "<#ffa600>[Camera]"
+  prefix: "<#ffa600>[Camera]<white>"
 
 command:
   setup:

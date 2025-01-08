@@ -45,10 +45,11 @@ public class Messages {
 
     public void sendURLMessage(Player player, String URL) {
         Component message = getMessage("render.completed");
-        message.replaceText(TextReplacementConfig.builder().match("{url}").replacement(URL).build());
-        message.clickEvent(ClickEvent.openUrl(URL));
+        String legacy_message = MiniMessage.miniMessage().serialize(message);
+        Component new_message = MiniMessage.miniMessage().deserialize(legacy_message.replace("{url}", URL));
+        new_message = new_message.clickEvent(ClickEvent.openUrl(URL));
         Audience aud = (Audience) player;
-        aud.sendMessage(message);
+        aud.sendMessage(new_message);
     }
 
     //Inner Functions
