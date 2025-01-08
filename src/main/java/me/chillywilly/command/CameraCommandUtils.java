@@ -127,7 +127,11 @@ public class CameraCommandUtils {
 
     public static void render(CommandSender sender, String shootname, Float timer) {
         ShootInfo info = CameraPlugin.plugin.shootManager.getShoot(shootname);
-        new ShootRunnable(info);
+        if (timer == -1) {
+            new ShootRunnable(info, info.getTimer());
+        } else {
+            new ShootRunnable(info, timer);
+        }
         sender.sendMessage("Successfully rendered!");
     }
 

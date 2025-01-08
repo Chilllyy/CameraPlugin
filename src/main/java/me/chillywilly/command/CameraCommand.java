@@ -125,7 +125,7 @@ public class CameraCommand implements TabExecutor {
                 }
             }
 
-            CameraCommandUtils.render(sender, shoot_name, 5.0f);
+            CameraCommandUtils.render(sender, shoot_name, -1.0f);
             return true;
         }
 
