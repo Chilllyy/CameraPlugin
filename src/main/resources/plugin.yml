@@ -3,6 +3,7 @@ main: me.chillywilly.CameraPlugin
 version: 0.0.1
 author: Chilly_Willy
 api-version: 1.20
+softdepend: [MultiverseCore, MultiWorld]
 
 commands:
   camera:

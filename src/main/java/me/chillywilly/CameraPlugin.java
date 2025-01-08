@@ -3,6 +3,8 @@ package me.chillywilly;
 import java.util.Collection;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.chillywilly.command.CameraCommand;
@@ -59,9 +61,12 @@ public class CameraPlugin extends JavaPlugin {
             Bukkit.getOnlinePlayers().forEach((player) -> {
                 if (!companionManager.isCompanion(player)) {
                     shoots.forEach((shoot) -> {
-                        if (player.getLocation().getWorld().equals(shoot.getSenseLocation().getWorld())) {
-                            if (!shoot.in_use() && player.getLocation().distance(shoot.getSenseLocation()) <= shoot.getRange()) {
-                                new ShootRunnable(shoot);
+                        Location sense = shoot.getSenseLocation();
+                        if (sense != null) {
+                            if (player.getLocation().getWorld().equals(sense.getWorld())) {
+                                if (!shoot.in_use() && player.getLocation().distance(sense) <= shoot.getRange()) {
+                                    new ShootRunnable(shoot);
+                                }
                             }
                         }
                     });
