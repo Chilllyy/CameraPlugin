@@ -24,9 +24,9 @@ public class ShootRunnable implements Runnable {
         player_list = new ArrayList<Player>();
         countdown_clock = info.getTimer();
         companion = CameraPlugin.plugin.companionManager.getNextAvailableCompanion();
-        info.setInUse(true);
 
         if (companion != null) {
+            info.setInUse(true);
             old_camera_location = companion.getLocation();
             companion.teleport(info.getCameraLocation());
             Bukkit.getOnlinePlayers().forEach((player) -> {
@@ -37,19 +37,16 @@ public class ShootRunnable implements Runnable {
                 }
             });
         } else {
-            player_list.forEach((player) -> {
-                if (player.isOnline()) {
+            Bukkit.getOnlinePlayers().forEach((player) -> {
+                if (player.getLocation().distance(info.getSenseLocation()) <= 15) {
                     CameraPlugin.plugin.messages.sendMessage(player, "render.no-camera-found");
                     info.setInUse(false);
-                } else {
-                    player_list.remove(player);
                 }
             });
-
             return;
         }
 
-        scheduleTimer();
+        this.assignedTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(CameraPlugin.plugin, this, 0, 20);
     }
 
     @Override
@@ -87,10 +84,6 @@ public class ShootRunnable implements Runnable {
         });
         
         countdown_clock--;
-    }
-
-    public void scheduleTimer() {
-        this.assignedTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(CameraPlugin.plugin, this, 0, 20);
     }
 
     public List<Player> getPlayers() {
