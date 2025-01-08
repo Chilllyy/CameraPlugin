@@ -40,8 +40,8 @@ public class ShootRunnable implements Runnable {
             });
         } else {
             Bukkit.getOnlinePlayers().forEach((player) -> {
-                if (player.getLocation().getWorld().equals(companion.getLocation().getWorld())) {
-                    if (player.getLocation().distance(companion.getLocation()) <= 15) {
+                if (player.getLocation().getWorld().equals(info.getSenseLocation().getWorld())) {
+                    if (player.getLocation().distance(info.getSenseLocation()) <= 15) {
                         CameraPlugin.plugin.messages.sendMessage(player, "render.no-camera-found");
                         info.setInUse(false);
                     }
