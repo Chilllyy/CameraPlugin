@@ -4,10 +4,10 @@ import java.util.Collection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.chillywilly.command.CameraCommand;
+import me.chillywilly.events.WorldEvent;
 import me.chillywilly.network.CompanionManager;
 import me.chillywilly.shoots.ShootInfo;
 import me.chillywilly.shoots.ShootManager;
@@ -42,6 +42,7 @@ public class CameraPlugin extends JavaPlugin {
 
         companionManager = new CompanionManager();
         getServer().getPluginManager().registerEvents(new CompanionManager(), this);
+        getServer().getPluginManager().registerEvents(new WorldEvent(), this);
 
         messages = new Messages();
 
