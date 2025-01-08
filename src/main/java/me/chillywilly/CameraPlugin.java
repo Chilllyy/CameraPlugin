@@ -80,11 +80,13 @@ public class CameraPlugin extends JavaPlugin {
                 companionManager.reload();
                 reloadConfig();
                 reloadWeb();
+                messages.reload();
                 break;
             case 1:
                 shootManager.reload();
                 companionManager.reload();
                 reloadConfig();
+                messages.reload();
                 break;
             case 2:
                 reloadWeb();
