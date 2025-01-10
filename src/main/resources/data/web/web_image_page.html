@@ -102,6 +102,7 @@
         <canvas id="image-canvas"></canvas>
         <div id="buttons">
             <button id="toggle-overlay">Toggle Overlay</button>
+            <button id="copy-image">Copy Image to Clipboard</button>
             <button id="download-image">Download Image</button>
         </div>
     </div>
@@ -155,7 +156,14 @@
                 toggle = true;
             }
         });
-
+        
+        document.getElementById('copy-image').addEventListener('click', () => {
+        	canvas.toBlob((blob) => {
+               const item = new ClipboardItem({ 'image/png': blob});
+               navigator.clipboard.write([item]);
+            });  
+        });
+        
         document.getElementById('download-image').addEventListener('click', () => {
             const link = document.createElement('a');
             link.download = 'downloaded-image.png';
