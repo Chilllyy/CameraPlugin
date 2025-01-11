@@ -148,7 +148,11 @@
             if (toggle) {
                 document.getElementById("date-display").hidden = false;
                 ctx.drawImage(image, 0, 0, image.width, image.height);
-                ctx.drawImage(image2, 0, 0, image.width, image.height);
+                try {
+                    ctx.drawImage(image2, 0, 0, image.width, image.height);
+                } catch (exception) {
+                    
+                }
                 toggle = false;
             } else {
                 ctx.drawImage(image, 0, 0, image.width, image.height);
