@@ -9,3 +9,8 @@ commands:
   camera:
     permission: camera.admin
     description: Main camera command for setting up photo opportunities
+
+permissions:
+  camera.camera:
+    default: op
+    description: Marks the user as capable of taking pictures

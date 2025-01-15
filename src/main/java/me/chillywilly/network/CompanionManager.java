@@ -151,11 +151,15 @@ public class CompanionManager implements Listener, PluginMessageListener {
     public void onPluginMessageReceived(String channel, Player player, byte[] message) { //Plugin channel message received, used to receive packets
         switch (channel) {
             case PluginConst.Network.COMPANION_FOUND_ID:
-                if (!companions.contains(player)) {
-                    companions.add(player);
-                    busy_map.put(player, false);
-                    CameraPlugin.plugin.getLogger().info("Found companion! (" + player.getName() + ")");
+                if (player.hasPermission("camera.camera")) {
+                    if (!companions.contains(player)) {
+                        companions.add(player);
+                        busy_map.put(player, false);
+                        CameraPlugin.plugin.getLogger().info("Found Companion! (" + player.getName() + ")");
+                    }
+                    return;
                 }
+                CameraPlugin.plugin.getLogger().info("Companion responded to check request, but doesn't have 'camera.camera' permission");
                 break;
             case PluginConst.Network.SCREENSHOT_TAKEN_ID:
                 busy_map.put(player, false);
