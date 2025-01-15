@@ -159,7 +159,7 @@ public class CompanionManager implements Listener, PluginMessageListener {
                     }
                     return;
                 }
-                CameraPlugin.plugin.getLogger().info("Companion responded to check request, but doesn't have 'camera.camera' permission");
+                CameraPlugin.plugin.getLogger().info("Companion responded to check request, but doesn't have 'camera.camera' permission (" + player.getName() + ")");
                 break;
             case PluginConst.Network.SCREENSHOT_TAKEN_ID:
                 busy_map.put(player, false);
