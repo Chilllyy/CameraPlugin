@@ -62,6 +62,7 @@ public class Web {
                     overlayStreamReader.close();
                 }
             } catch (FileNotFoundException e) {
+                ctx.status(400);
                 return;
             } catch (IOException e) {
                 CameraPlugin.plugin.getLogger().warning("Unable to read image from disk: " + UUID);
