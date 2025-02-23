@@ -210,6 +210,7 @@ public class CameraCommand implements TabExecutor {
                         case "overlay":
                             File[] files = PluginConst.Storage.overlay_folder.listFiles();
                             List<String> file_names = new ArrayList<String>();
+                            file_names.add("reset");
                             for (File file : files) {
                                 String name = file.getName().split("\\.")[0];
                                 file_names.add(name);

@@ -82,6 +82,14 @@ public class CameraCommandUtils {
             case "overlay":
                 File[] overlays = PluginConst.Storage.overlay_folder.listFiles();
                 for (File overlay : overlays) {
+                    if (argument.equalsIgnoreCase("reset")) {
+                        if (info.setOverlay(null)) {
+                            CameraPlugin.plugin.messages.sendMessage(player, "command.setup.overlay.success");
+                            return;
+                        }
+                        CameraPlugin.plugin.messages.sendMessage(player, "command.setup.overlay.fail");
+                        return;
+                    }
                     if (overlay.getName().split("\\.")[0].equalsIgnoreCase(argument)) {
                         if (info.setOverlay(argument)) {
                             CameraPlugin.plugin.messages.sendMessage(player, "command.setup.overlay.success");
