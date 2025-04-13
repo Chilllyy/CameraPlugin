@@ -59,9 +59,12 @@ public class CameraPlugin extends JavaPlugin {
             Bukkit.getOnlinePlayers().forEach((player) -> {
                 if (!companionManager.isCompanion(player)) {
                     shoots.forEach((shoot) -> {
-                        if (!shoot.in_use() && player.getLocation().distance(shoot.getSenseLocation()) <= shoot.getRange()) {
-                            new ShootRunnable(shoot);
+                        if (player.getWorld().getName().equalsIgnoreCase(shoot.getCameraLocation().getWorld().getName())) {
+                            if (!shoot.in_use() && player.getLocation().distance(shoot.getCameraLocation()) <= shoot.getRange()) {
+                                new ShootRunnable(shoot);
+                            }
                         }
+                        
                     });
                 }
             });
