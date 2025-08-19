@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Path;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
@@ -14,6 +16,7 @@ import java.util.UUID;
 
 import io.javalin.Javalin;
 import io.javalin.http.UploadedFile;
+import io.javalin.http.staticfiles.Location;
 import io.javalin.util.FileUtil;
 import io.javalin.util.JavalinLogger;
 import me.chillywilly.CameraPlugin;
@@ -29,8 +32,10 @@ public class Web {
         this.port = port;
         existing_uuids = CameraPlugin.plugin.database.getExistingUUIDs();
         JavalinLogger.startupInfo = false;
+        File image_folder = new File(CameraPlugin.plugin.getDataFolder(), "data/public/");
         this.app = Javalin.create(config -> {
             config.showJavalinBanner = false;
+            config.staticFiles.add(image_folder.getAbsolutePath(), Location.EXTERNAL);
         });
 
         app.get("/image/{uuid}", ctx -> {
@@ -44,30 +49,8 @@ public class Web {
 
             File overlay = new File(PluginConst.Storage.overlay_folder, overlay_name + ".png");
 
-            String base64_image = "";
-            String base64_overlay = "";
-            try {
-                FileInputStream fileInputStreamReader = new FileInputStream(image);
-                byte[] bytes = new byte[(int)image.length()];
-                fileInputStreamReader.read(bytes);
-                base64_image = new String(Base64.getEncoder().encode(bytes), "UTF-8");
-                fileInputStreamReader.close();
-
-
-                if (!overlay_name.equalsIgnoreCase("null")) {
-                    FileInputStream overlayStreamReader = new FileInputStream(overlay);
-                    byte[] overlay_bytes = new byte[(int)overlay.length()];
-                    overlayStreamReader.read(overlay_bytes);
-                    base64_overlay = new String(Base64.getEncoder().encode(overlay_bytes), "UTF-8");
-                    overlayStreamReader.close();
-                }
-            } catch (FileNotFoundException e) {
-                ctx.status(404);
-                return;
-            } catch (IOException e) {
-                CameraPlugin.plugin.getLogger().warning("Unable to read image from disk: " + UUID);
-                e.printStackTrace();
-            }
+            String image_url = CameraPlugin.plugin.getConfig().getString("web.url") + "/images/" + UUID + ".png";
+            String overlay_url = CameraPlugin.plugin.getConfig().getString("web.url") + "/overlays/" + overlay_name + ".png";
 
             StringBuilder player_list = new StringBuilder();
             int image_id = CameraPlugin.plugin.database.getImageId(UUID);
@@ -82,9 +65,7 @@ public class Web {
 
             SimpleDateFormat UTC = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
 
-            
-
-            html = html.replace("{image1}", base64_image).replace("{image2}", base64_overlay);
+            html = html.replace("{image1}", image_url).replace("{image2}", overlay_url);
             html = html.replace("{player_list}", player_list.toString()).replace("{date}", UTC.format(date));
             ctx.status(200).html(html);
         });

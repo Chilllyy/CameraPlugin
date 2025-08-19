@@ -17,10 +17,11 @@ public class PluginConst {
 
     public class Storage {
         public static final File data_folder = new File(CameraPlugin.plugin.getDataFolder(), "data");
-        public static final File images_folder = new File(data_folder, "images");
+        public static final File public_folder = new File(data_folder, "public");
+        public static final File images_folder = new File(public_folder, "images");
+        public static final File overlay_folder = new File(public_folder, "overlays");
         public static final File shoots_folder = new File(data_folder, "shoots");
         public static final File web_folder = new File(data_folder, "web");
-        public static final File overlay_folder = new File(data_folder, "overlays");
 
         public static void init() {
             data_folder.mkdirs();
