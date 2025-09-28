@@ -1,6 +1,8 @@
 # Disclaimers
+>[!NOTE]
 >This Plugin Requires a Dedicated Camera Minecraft Account that is logged onto the server
 
+>[!NOTE]
 >This Plugin Requires an open web port on your server and knowledge of network ports/networking
 
 # Info
