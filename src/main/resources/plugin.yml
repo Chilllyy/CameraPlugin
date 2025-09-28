@@ -4,6 +4,7 @@ version: '1.0.5'
 author: Chilly_Willy
 api-version: 1.20
 softdepend: [MultiverseCore, MultiWorld]
+website: https://github.com/Chilllyy/CameraPlugin
 
 commands:
   camera:
