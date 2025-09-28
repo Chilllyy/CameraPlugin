@@ -9,7 +9,8 @@ This is a plugin and mod combination I created to take in-game screenshots, sort
 depends on [Camera Plugin Helper](https://github.com/Chilllyy/CameraPluginHelper)
 
 # Photos
-
+![Promotional Photo 1](https://raw.githubusercontent.com/Chilllyy/CameraPlugin/refs/heads/master/media/promo_photo_1.png)
+![View of default webpage](https://raw.githubusercontent.com/Chilllyy/CameraPlugin/refs/heads/master/media/webpage_photo.png)
 
 # Usage
 1. Install the server plugin, make sure you have a free port to host the webserver (restart your server after you change the port)
