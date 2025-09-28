@@ -8,6 +8,8 @@ This is a plugin and mod combination I created to take in-game screenshots, sort
 
 depends on [Camera Plugin Helper](https://github.com/Chilllyy/CameraPluginHelper)
 
+Join my [Discord](https://discord.gg/MAZE2EWFR9) for support
+
 # Photos
 ![Promotional Photo 1](https://raw.githubusercontent.com/Chilllyy/CameraPlugin/refs/heads/master/media/promo_photo_1.png)
 
