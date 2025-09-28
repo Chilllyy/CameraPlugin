@@ -132,7 +132,7 @@ public class CameraCommandUtils {
         } else {
             new ShootRunnable(info, timer);
         }
-        sender.sendMessage("Successfully rendered!");
+        sender.sendMessage("Requested Render of image");
     }
 
 
