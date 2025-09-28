@@ -33,7 +33,7 @@ depends on [Camera Plugin Helper](https://github.com/Chilllyy/CameraPluginHelper
   - You can put overlay images under plugins/Camera/data/public/overlays with any name, it will auto scale/stretch to fit the image provided
 - Can I edit the HTML to make it more *my server*
   - Edit the file under plugins/Camera/data/web/web_image_page.html *some HTML knowledge recommended*
-    - The only variables you need to worry about in is {image1} and {image2}, they are replaced with links to the shoot and overlay respectively
+    - The only variables you need to worry about in is {image1}, {image2} and {player_list}, they are replaced with links to the shoot image, overlay image and player list respectively
 
 
 ## Command Usage (parentheses means required, square brackets means optional)
