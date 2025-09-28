@@ -21,8 +21,7 @@ depends on [Camera Plugin Helper](https://github.com/Chilllyy/CameraPluginHelper
     <ul>
         <li>
             1. Install the server plugin, make sure you have a free port to host the webserver (restart your server after you change the port)
-                
-                - Make sure to modify the url, that is what is sent to the players to view. It should point to the port assigned below it
+            <sub>Make sure to modify the url, that is what is sent to the players to view. It should point to the port assigned below it</sub>
         </li>
     </ul>
 </details>
