@@ -110,6 +110,7 @@ public class CompanionManager implements Listener, PluginMessageListener {
                     CameraPlugin.plugin.messages.sendURLMessage(player, url);
                 }
             });
+            CameraPlugin.plugin.messages.sendURLMessage(runnable.getCompanion(), url);
             busy_map.put(runnable.getCompanion(), false);
         }
     }
