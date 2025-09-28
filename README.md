@@ -1,8 +1,8 @@
 # Disclaimers
->[!NOTE]
+>[!IMPORTANT]
 >This Plugin Requires a Dedicated Camera Minecraft Account that is logged onto the server
 
->[!NOTE]
+>[!IMPORTANT]
 >This Plugin Requires an open web port on your server and knowledge of network ports/networking
 
 # Info
@@ -15,6 +15,16 @@ depends on [Camera Plugin Helper](https://github.com/Chilllyy/CameraPluginHelper
 
 ![View of default webpage](https://raw.githubusercontent.com/Chilllyy/CameraPlugin/refs/heads/master/media/webpage_photo.png)
 
+# Usage
+<details>
+    <summary>Click to Expand</summary>
+    <ul>
+        <li>
+            1. Install the server plugin, make sure you have a free port to host the webserver (restart your server after you change the port)
+                - Make sure to modify the url, that is what is sent to the players to view. It should point to the port assigned below it
+        </li>
+    </ul>
+</details>
 # Usage
 1. Install the server plugin, make sure you have a free port to host the webserver (restart your server after you change the port)
    - Make sure to modify the url, that is what is sent to the players to view. It should point to the port assigned below it
