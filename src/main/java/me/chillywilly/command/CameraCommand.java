@@ -18,17 +18,17 @@ public class CameraCommand implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length < 1)  {
-            sender.sendMessage("Usage: /camera (setup | create | delete | rename | render | reload)");
+            sender.sendMessage("Usage: /camera (setup | create | delete | rename | render | overlay | reload)");
             return true;
         }
         String subcommand = args[0];
         if (args.length < 2) {
             switch (subcommand.toLowerCase()) {
                 case "setup":
-                    sender.sendMessage("Usage: /camera setup (name) (range | camera | timer | shootLocation (rollercoaster))");
+                    sender.sendMessage("Usage: /camera setup (name) (range | camera | overlay | timer | sense)");
                     return true;
                 case "create":
-                    sender.sendMessage("Usage: /camera create (name) [static | rollercoaster]");
+                    sender.sendMessage("Usage: /camera create (name) static");
                     return true;
                 case "delete":
                     sender.sendMessage("Usage: /camera delete (name)");
@@ -53,7 +53,7 @@ public class CameraCommand implements TabExecutor {
         if (args.length < 3) {
             switch (subcommand.toLowerCase()) {
                 case "setup":
-                    sender.sendMessage("Usage: /camera setup (name) (range | camera | timer | sense | shootLocation (rollercoaster))");
+                    sender.sendMessage("Usage: /camera setup (name) (range | camera | timer | sense)");
                     return true;
                 case "create":
                     break; //3rd argument is optional, not required, defaults to static
@@ -100,7 +100,7 @@ public class CameraCommand implements TabExecutor {
                             case "rollercoaster":  
                                 break; //Do nothing, this is correct
                             default:
-                                sender.sendMessage("Usage: /camera create (name) [static | rollercoaster]");
+                                sender.sendMessage("Usage: /camera create (name) [static]");
                                 return true;
                         }
                     }
@@ -184,12 +184,12 @@ public class CameraCommand implements TabExecutor {
                     case "setup":
                         ShootInfo shoot = CameraPlugin.plugin.shootManager.getShoot(shoot_identifier);
                         if (shoot != null && shoot.isRollercoaster()) {
-                            StringUtil.copyPartialMatches(args[2], List.of("range", "camera", "timer", "sense", "shootLocation", "overlay"), ret);
+                            StringUtil.copyPartialMatches(args[2], List.of("range", "camera", "timer", "sense", "overlay"), ret);
                         }
                         StringUtil.copyPartialMatches(args[2], List.of("range", "camera", "timer", "sense", "overlay"), ret);
                         break;
                     case "create":
-                        StringUtil.copyPartialMatches(args[2], List.of("static", "rollercoaster"), ret);
+                        StringUtil.copyPartialMatches(args[2], List.of("static"), ret);
                         break;
                     case "delete":
                         break;
@@ -204,9 +204,9 @@ public class CameraCommand implements TabExecutor {
                 if (args[0].equalsIgnoreCase("setup")) {
                     switch (args[2].toLowerCase()) {
                         case "timer":
-                            return List.of("Timer");
+                            return List.of();
                         case "range":
-                            return List.of("Range");
+                            return List.of();
                         case "overlay":
                             File[] files = PluginConst.Storage.overlay_folder.listFiles();
                             List<String> file_names = new ArrayList<String>();
