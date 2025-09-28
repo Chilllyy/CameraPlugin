@@ -29,8 +29,9 @@ depends on [Camera Plugin Helper](https://github.com/Chilllyy/CameraPluginHelper
         </li>
         <li>
             3. make sure camera account has `camera.camera` permission node
-            <sub>You may have to run `/camera reload core` to get it to recognize the camera, it only checks on join and when reloading</sub>
-            <sub>Without the permission, the server won't recognize it as a camera that is able to be used</sub>
+            >[!NOTE]
+            ><sub>You may have to run `/camera reload core` to get it to recognize the camera, it only checks on join and when reloading</sub>
+            ><sub>Without the permission, the server won't recognize it as a camera that is able to be used</sub>
         </li>
         <li>
             4. run `/camera create (name)` **if this doesn't work, make sure you have the `camera.admin` permission
