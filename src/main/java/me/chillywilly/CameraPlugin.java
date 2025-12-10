@@ -32,11 +32,6 @@ public class CameraPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        if (!getConfig().contains("metrics")) { //For updating older config files with the new option
-            getConfig().set("metrics", true);
-            saveConfig();
-        }
-
         if (getConfig().getBoolean("metrics")) {
             int bStatsPluginID = 28290;
             Metrics metrics = new Metrics(this, bStatsPluginID);
