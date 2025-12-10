@@ -2,6 +2,8 @@ package me.chillywilly;
 
 import java.util.Collection;
 
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -25,9 +27,15 @@ public class CameraPlugin extends JavaPlugin {
     public DatabaseManager database;
     public Messages messages;
     private Web web;
+    public int photosTaken = 0;
 
     @Override
     public void onEnable() {
+        int bStatsPluginID = 28290;
+        Metrics metrics = new Metrics(this, bStatsPluginID);
+
+        metrics.addCustomChart(new SingleLineChart("photosTaken", () -> this.photosTaken));
+
         saveDefaultConfig();
 
         CameraCommand command = new CameraCommand();
