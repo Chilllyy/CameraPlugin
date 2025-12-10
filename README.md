@@ -10,6 +10,10 @@ depends on [Camera Plugin Helper](https://github.com/Chilllyy/CameraPluginHelper
 
 Join my [Discord](https://discord.gg/MAZE2EWFR9) for support
 
+available on
+[Modrinth](https://modrinth.com/plugin/cameraplugin)
+[CurseForge](https://www.curseforge.com/minecraft/bukkit-plugins/cameraplugin)
+
 # Photos
 ![Promotional Photo 1](https://raw.githubusercontent.com/Chilllyy/CameraPlugin/refs/heads/master/media/promo_photo_1.png)
 
