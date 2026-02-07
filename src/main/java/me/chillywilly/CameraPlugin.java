@@ -1,13 +1,5 @@
 package me.chillywilly;
 
-import java.util.Collection;
-
-import org.bstats.bukkit.Metrics;
-import org.bstats.charts.SingleLineChart;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import me.chillywilly.command.CameraCommand;
 import me.chillywilly.events.WorldEvent;
 import me.chillywilly.network.CompanionManager;
@@ -18,6 +10,12 @@ import me.chillywilly.util.DatabaseManager;
 import me.chillywilly.util.Messages;
 import me.chillywilly.util.PluginConst;
 import me.chillywilly.web.Web;
+import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Collection;
 
 public class CameraPlugin extends JavaPlugin {
 
@@ -27,7 +25,6 @@ public class CameraPlugin extends JavaPlugin {
     public DatabaseManager database;
     public Messages messages;
     private Web web;
-    public int photosTaken = 0;
 
     @Override
     public void onEnable() {
@@ -35,8 +32,6 @@ public class CameraPlugin extends JavaPlugin {
         if (getConfig().getBoolean("metrics")) {
             int bStatsPluginID = 28290;
             Metrics metrics = new Metrics(this, bStatsPluginID);
-
-            metrics.addCustomChart(new SingleLineChart("photosTaken", () -> this.photosTaken));
         }
 
         CameraCommand command = new CameraCommand();

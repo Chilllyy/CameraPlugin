@@ -98,7 +98,6 @@ public class CompanionManager implements Listener, PluginMessageListener {
     }
 
     public void authUploadedFile(Integer auth, UUID uuid) {
-        CameraPlugin.plugin.photosTaken++;
         ShootRunnable runnable = running_shoots.get(auth);
         int image_id = CameraPlugin.plugin.database.insertImage(uuid, runnable.getInfo().getOverlay());
         runnable.getPlayers().forEach((player) -> {
